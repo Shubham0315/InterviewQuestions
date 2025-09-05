@@ -1,4 +1,4 @@
-# Aligned Automation
+# Aligned Automation R2 Technical
 
 From K8S perspective what standards do you follow for the on-premises deployments?
 - 
@@ -183,4 +183,6 @@ I have deployed microservice on K8S cluster and I dont want that cluster to be a
 - To ensure my microservice isn’t accessible from outside, I expose it only as a ClusterIP service (no NodePort or LoadBalancer). If stricter control is needed, I apply NetworkPolicies to restrict which pods/namespaces can reach it.
 
 ---------------------------------------------------------------------------------------
+
+# Aligned Automation R4 (Technical)
 
