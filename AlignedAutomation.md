@@ -186,3 +186,89 @@ I have deployed microservice on K8S cluster and I dont want that cluster to be a
 
 # Aligned Automation R4 (Technical)
 
+As you are using multiple services like VPC, what is the best architecture in terms of security and networking point of view if we need to setup 3 tier architecture in AWS? Where will you place EC2 in that 3 tier architecture?
+-
+- 3 tier architecture like web,app,db we can implement using VPC, subnets, routing and security controls
+- VPC (Virtual Private Cloud)
+  - Create one VPC per environment (dev,prod).
+  - Define multiple sunets across at least 2 AZs for HA
+  - Subnets can be public (for internet facing resources), private app subnets (for app layer EC2 instances or EKS nodes), private DB subnets (for databases like RDS, dynamoDB)
+ 
+- For web tier, we can use ALB in public subnet which routes traffic to private subnet. No EC2 will be there in public subnet
+- For app tier, we can have EC2 (or EKS services) inside private subnet which are only accessible via ALB. Outbound access via NAT gateway
+- For DB tier, we can place RDS instances in private subnet (no public IP). SG allows traffic only from app tier
+
+- Additionally we can configure SG and NACL with IAM policies
+- We can also place Bastion host (jump server) in public subnet and restrict SSH access to private instances via it and SGs
+
+- For a 3-tier architecture in AWS, I set up a VPC with public and private subnets across multiple AZs. The web tier (ALB) sits in public subnets, the app tier (EC2/ECS/EKS) in private subnets, and the DB tier (RDS) in private subnets with no Internet access. Security groups enforce tier-to-tier traffic only (ALB → App → DB). NAT Gateways in public subnets allow outbound traffic for patching. For security, I add WAF, IAM roles, encryption, and monitoring. This ensures isolation, least privilege, and high availability.
+
+- We dont need to put our web server directly into public subnets because that increases the attack surface. Instead we place only ALB in public subnet, which is designed to handle internet traffic. Actual web app inside private subnet, only accessible from ALB via SG. Security is applied at ALB level rather than leaving app servers directly exposed.
+
+---------------------------------------------------------------------------------------
+
+How do you differentiate public and private subnet?
+-
+- Public Subnet
+  - Its associated with route table that has route to an internet gateway (IGW)
+  - Resources inside it like EC2, ALB can get public IP and can be accessed from internet if SG allow
+  - Used as ALB, we can place bastion host here
+
+- Priavte Subnet
+  - Not directly connected to IGW
+  - No direct inbound/outbound internet access
+  - Outbound internet is routed via NAT gateway in public subnet
+  - We can place app servers like EC2/EKS, DBs, which we dont want to expose
+ 
+---------------------------------------------------------------------------------------
+
+What is basic difference between Security group and NACL?
+-
+- SG works at instnace level while NACL works at subnet level
+- SG is stateful and NACL is stateless
+- By default in SG all traffic is denied except what we allow. In NACL all traffic is allowed until we add rules
+- SG have only allow rules while NACL have allow and deny both
+- in SG no rule priority, in NACL rules are evaluated in order from lowest to highest
+
+- SG are stateful, instance level firewalls that only supports allow rules while NACL are stateless, subnet level firewalls that support both allow and deny rules
+- SGs are used for fine grained resource access control like ALB while NACL are used for broader subnet-wide traffic filtering, such as blocking specific IP ranges
+
+---------------------------------------------------------------------------------------
+
+SG and NACL - which is stateful and which is stateless?
+-
+- Security groups
+  - Stateful - remembers connection
+  - If you allow inbound traffic on port, the response outbound traffic is auto allowed, we dont need to explicitly add outbound rules. Similar for outbound
+  - If we allow inbound TCP 22 SSH from 10.0.1.10 and connect it to EC2, outbound from EC2 to 10.0.1.10 is auto allowed
+  - Thats why SGs are simpler to manage
+ 
+- NACLs
+  - Stateless - dont remember connection
+  - If we allow inbound traffic, we must also explicitly allow corresponding outbound traffic, otherwise return packets are dropped.
+  - Both inbound and outbound need to be configured
+  - NACLs are more detailed but harder to manage
+ 
+---------------------------------------------------------------------------------------
+
+If you have written shell script to take backup and have scheduled shell script via cron job that runs at some time everyday, how can we ensure that script is running everyday? Also how we get to know that its running at the specified time?
+-
+- We can monitor cron logs at "/var/log/syslog or /var/log/cron" to see entry every day for our job
+- Redirect script output to log file
+  - Command :- **0 2 * * * /home/shubham/backup.sh >> /var/log/backup.log 2>&1**
+  - >> appends STDOUT, 2>&1 appends STDERR
+  - We can tail /var/log/backup.log 2>&1 to confirm if our cron runs
+- We can set email notifications :- MAILTO="xyz@gmail.com"
+- We can also append success message with timestamp inside backup.sh
+  - Command :- **echo "$(date): Backup successful" >> /var/log/backup_status.log**
+
+- To ensure a cron-scheduled backup script runs daily, I redirect its output to a log file and also add a success marker in a status log. I can verify runs from /var/log/cron and my custom logs. For stronger guarantees, I integrate with a monitoring system or a healthcheck service like healthchecks.io that pings me if the job doesn’t run. Additionally, I validate by checking that the daily backup file exists with the correct timestamp. This way, I can be sure the backup script is running successfully every day
+
+---------------------------------------------------------------------------------------
+
+Without checking log file where logs getting appended, can we check if script is running?
+-
+- We can confirm if cron scheduled script is running by checking active process list with ps, or monitoring backup file timestamps.
+
+---------------------------------------------------------------------------------------
+
