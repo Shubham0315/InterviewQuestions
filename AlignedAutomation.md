@@ -48,3 +48,139 @@ How to setting up splunk for any application?
 - Create dashboards for KPIs like errors, response times, traffic. Define alerts
 
 - "To set up Splunk for an application, we first create an index in Splunk, then install a Universal Forwarder on the app host or configure HTTP Event Collector for containerized apps. We define the sourcetype, configure inputs to monitor log files or streams, and send them to Splunk indexers. Once data is ingested, we validate via Splunk search and build dashboards and alerts for monitoring."
+
+---------------------------------------------------------------------------------------
+
+If there is performance related issue showing in splunk logs, how to troubleshoot it?
+- Identify symptoms in logs like Slow response times, timeouts, High memory or CPU usage, frequent retries or failures
+- Narrow down time picker/range
+- Correlate logs across services like tracing request ID / correlation ID across services
+- Check for known error patterns :- DB slow query logs, queue full, 
+- Analyze custom metrics 
+
+- Check if there is memory related issues and how many events for the same. Check for timestamp and related logs. If its not getting required memory requests or limits
+- Check on which cluster we're getting error or on which service error is there
+
+---------------------------------------------------------------------------------------
+
+What are standard branching strategies used for an application?
+-
+- Standard branching strategies help us manage source code, releases and features efficiently.
+- Git Flow :- Suited for apps with scheduled releases.
+  - main 		:- prod code branch
+  - development 	:- integrated branch for features
+  - feature 	:- for new features
+  - release 	:- for pre-release preparation
+  - hotfix 	:- for critical prod fixes
+ 
+- GitHub flow
+- Single long branch is main. We can create feature branches from main
+  - main :- prod ready code
+  - feature :- short lived branches off main
+  - PRs are merged into main
+ 
+- Release Branching
+  - Dedicated branch per release version
+  - Allows maintenance/patching for older versions while new features continue on main
+ 
+- Feature branching
+  - Each feature gets its own branch
+  - Merged after code review and testing
+ 
+---------------------------------------------------------------------------------------
+
+If I have created dev branch and deployed on dev env, if I want to move that code to staging env , how to do that?
+-
+- Merge dev to staging  (Option 1)
+  - git checkout staging 		:- switch to staging
+  - git pull origin staging	:- pull latest staging changes
+  - git merge dev 		:- merge dev to staging
+  - git commit -am "message"	:- resolve conflicts then commit
+  - git push origin staging	:- push to remote staging
+
+- Create PR from DEV to staging (Option 2)
+  - Create PR in GitHub :- review changes :- merge PR after approval
+
+- To promote code from dev to staging, we usually merge the dev branch into the staging branch and push it, which triggers the staging deployment pipeline. This ensures that only reviewed and tested code moves forward. In modern CI/CD, some teams don’t use separate staging branches but instead deploy the same branch (main) to multiple environments with different configs, controlling promotion through pipelines and approvals
+
+---------------------------------------------------------------------------------------
+
+How to maintain branching standards once testing is done and we want to move code from dev to staging?
+-
+- Follow standard branching workflow :- main, staging, dev, feature
+- Ensure dev is up to date and stable
+- Create PR from dev to staging
+- Merge dev to staging
+- Tag the staging release
+
+---------------------------------------------------------------------------------------
+
+Before setting up infra for an application, what is the process of standardizing any DR?
+-
+- Its critical to ensure business continuity, data integrity and minimal downtime in case of failures
+- Understand business requirements like max downtime acceptable for users
+- Perform risk assessment :- Identify potential failure points, evaluate impact on users
+- Classify app components like backend, frontend, DB
+- Choose DR strategy per components
+  - For DB :- replication, periodic snapshots
+  - For app :- multi region deployment or auto scaling
+  - For storage :- cross region replication
+- Then design DR architecture :- Use multi region or multi AZ design. Define failover mechanism like DNS switch, LB
+- Standardize backup policies :- Frequency of backup, data retention period
+- Use IaC for DR
+
+---------------------------------------------------------------------------------------
+
+Difference between clusterIP, nodeport and LB services?
+-
+- Cluster IP Mode
+  - App exposes service inside the cluster only. Used for internal communication between services.
+  - Assigns virtual Cluster IP to the service
+  - Traffic flows from pod - Cluster IP - Kube proxy - Pod
+
+<img width="721" height="324" alt="image" src="https://github.com/user-attachments/assets/fef1f2b1-e55c-46c9-a292-26c8ae7e875f" />
+
+- Node Port Mode
+  - Services allow apps to be accessible within organization or network
+  - Anyone with access to worker nodes can access our app
+  - Exposes service on eac Node's IP at static port (30000 - 32767)
+  - Traffic flows from Client - NodeIP:NodePort - kube proxy - Pod
+  - Works with cloud provider
+
+<img width="754" height="338" alt="image" src="https://github.com/user-attachments/assets/2815151a-7854-4dba-8b47-ca6098207008" />
+
+- Load Balancer
+  - Provisions external LB like cloud and routes traffic into cluster
+  - Used for internet facing apps in cloud environment
+  - Traffic flows from client - Cloud LB - Node Port - Kube proxy - Pod
+  - It auto balances traffic
+ 
+<img width="725" height="311" alt="image" src="https://github.com/user-attachments/assets/055bcd94-b6df-4de1-bcc4-4dce438a5aa3" />
+
+---------------------------------------------------------------------------------------
+
+How to manage K8S DNS?
+- 
+- K8S uses CoreDNS as default DNS server. It runs as deploument in "kube-system" NS. It auto provides service discovery inside cluster
+  - If we create service "myapp" in NS "dev", DNS name will be :- **myapp.dev.svc.cluster.local**
+ 
+- DNS resolution in K8S :- Pods use cluster DNS by deafult
+- Managing DNS config
+  - Configure coreDNS :- edit coredns configMap inside "kube-system"
+ 
+- In Kubernetes, DNS is managed by CoreDNS, which provides automatic service discovery. Services get DNS names like service.namespace.svc.cluster.local. Pods use this for internal communication. We can customize DNS policies in pod specs and manage CoreDNS via its ConfigMap
+
+---------------------------------------------------------------------------------------
+
+I have deployed microservice on K8S cluster and I dont want that cluster to be accessed outside environment. How to configure that?
+-
+- Use clusterIP service as its accessible inside cluster only to ensure no IP/Port is exposed
+- Avoid node port and LB
+- Use network policies for namespaces if we dont want all NS/PODS to reach that service
+- Block external access at Ingress level
+- Restrict access with firewalls/SGs
+
+- To ensure my microservice isn’t accessible from outside, I expose it only as a ClusterIP service (no NodePort or LoadBalancer). If stricter control is needed, I apply NetworkPolicies to restrict which pods/namespaces can reach it.
+
+---------------------------------------------------------------------------------------
+
