@@ -272,3 +272,108 @@ Without checking log file where logs getting appended, can we check if script is
 
 ---------------------------------------------------------------------------------------
 
+Datadog is agentless or agent based?
+-
+- Data dog is primarily agent based
+- We can install datadog agent on our host like EC2, VM, container, K8S node.
+- Agent collects metrics, logs, traces locally and forwards them to datadog
+
+- However it also supports some agentless integrations via cloud provider APIs
+- For on premises agent based, for cloud agentless
+
+---------------------------------------------------------------------------------------
+
+How do you monitor your K8S cluster using datadog?
+-
+- We monitor our Kubernetes cluster using Datadog by deploying the Datadog Agent as a DaemonSet on every node. The agent collects node, pod, and cluster-level metrics from kubelet and the API server. We also enable the Kubernetes State Metrics Core for workload health, and log collection for pod/application logs. For larger clusters, we run the Datadog Cluster Agent to reduce API load. The collected data is visualized in Datadog’s built-in Kubernetes dashboards, and we configure alerts for node failures, pod restarts, scheduling issues, and resource saturation. Additionally, we enable APM for application-level traces.
+
+---------------------------------------------------------------------------------------
+
+Suppose you have deployed application on EKS cluster and for some reason your pods are not able to communicate with each other. What could be the reason?
+-
+- This case usually points to networking issues in K8S cluster
+- EKS uses Amazon VPC CNI plugin. If its misconfigured, pods may not get valid IPs. They're stuck in ContainerCreating or network plugin not ready
+- In EKS each node has attached SG. If intra or inter-node traffic is blocked, pods cant communicate
+- If NACLs for VPC subnets are too restrictive, pod to pod traffic can be denied
+- If subnet runs out of IPs, new pods wont get assigned valid IPs
+- Network policies can block pod to pod communications
+
+---------------------------------------------------------------------------------------
+
+Where can we check if inter pod communication is allowed?
+-
+- Inter-pod communication in Kubernetes is open by default, but it can be restricted by NetworkPolicies, AWS Security Groups, or NACLs in EKS. To check, I first look at existing NetworkPolicies (**kubectl get networkpolicy**) to see if ingress/egress rules are blocking.
+- Then we can validate the security groups and NACLs for node ENIs in AWS to ensure they allow intra-VPC traffic.
+- Finally, we can check and confirm pod IP allocation with kubectl get pods -o wide and run a test pod (like netshoot) to verify connectivity between pods.
+
+---------------------------------------------------------------------------------------
+
+What is the difference between LB service type and ingress? Why ingress is used if we have LB service type?
+-
+- **Load Balancer**
+  - It creates external cloud provider LB
+  - Exposes single service to internet with dedicated external IP
+  - Used when we've to expose one app directly outside the cluster
+ 
+- **Ingress**
+  - Provides HTTP/S routing rules to multiple services behind single LB
+  - Ingress controller sits at edge, receives traffic and routes based on hostnames and paths
+  - Used when we have multiple services and want to expose them using single entry point
+  - Supports path based, host based routing
+  - Only works at L7
+ 
+- A LoadBalancer service exposes a single application to the internet by provisioning a cloud load balancer. The issue is that if we have many microservices, each needs its own load balancer, which is costly and inefficient.
+- Ingress solves this by acting as a Layer 7 reverse proxy with an Ingress Controller, allowing us to expose multiple services behind a single external load balancer. Ingress also supports features like TLS termination, host-based and path-based routing, making it more flexible for web applications
+
+---------------------------------------------------------------------------------------
+
+If I have one project folder and I want to use that same codebase on multiple environments like dev, UAT, prod, how can we do that in terraform?
+-
+- Using workspaces which lets us use same codebases but separate state files
+- Each WS keeps its own infra state where we can parameterize env specific values as required
+- Create new WS, select it, apply config, state file config will be limited to that WS only
+
+- We can also use modules and separate env folders
+- We can keep reusable modules in one place. Each env has its own folder calling those modules with diff vars
+
+<img width="756" height="382" alt="image" src="https://github.com/user-attachments/assets/15113ed0-280d-4870-915e-5e7a338368d0" />
+
+
+---------------------------------------------------------------------------------------
+
+How do you maintain terraform statefile?
+-
+- On AWS S3 as remote backend
+
+---------------------------------------------------------------------------------------
+
+Is cloudwatch agent is mandatory to configure metrics/services monitoring?
+-
+- Its not always mandatory. It depends on type of metrics you want to monitor
+- Many AWS services send default metrics to Cloudwatch automatically like EC2, lambda, CPU
+
+- For custom metrics cloudwatch agent might be required like memory/disk utilization, swap usage
+
+---------------------------------------------------------------------------------------
+
+How do you secure credentials in jenkins?
+-
+- Store inside credentials manager and mask the secrets them to use in pipelines
+- We can also store in external secret managers like AWS or hashicorp vault
+
+---------------------------------------------------------------------------------------
+
+If you have to deploy application on linux environment, how will you connect linux from jenkins?
+-
+- To deploy app on linux server we need secure way for jenkins to connect and execute commands
+
+- SSH Connection
+  - Install SSH plugin, configure linux server credentials (username+ssh private key) in jenkins credentials store
+ 
+- Jenkins agent on Linux
+  - Make linux server a jenkins agent so pipeline runs directly on linux node, no ssh required
+
+- To deploy an application on a Linux environment from Jenkins, the most common approach is using SSH. We store the Linux server SSH key in Jenkins credentials and use the SSH Agent plugin to connect and execute deployment commands. Alternatively, we can configure the Linux server as a Jenkins agent node, so the pipeline runs directly on it. In some projects, we integrate Jenkins with Ansible or Terraform to handle deployments, which removes the need for direct SSH. In all cases, credentials are securely stored in Jenkins and injected only at runtime
+
+---------------------------------------------------------------------------------------
+
