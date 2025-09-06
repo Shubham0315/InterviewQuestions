@@ -297,8 +297,76 @@ Which kind of storage your app team is using for K8S cluster?
 How many types of volumes we can create in K8S cluster?
 -
 - Ephemeral volumes (temporary), persistent volumes (backed by external storage)
-- Ephemeral :- emptyDir, configMap, secrets
+- Ephemeral :- emptyDir, configMap, secrets. Used by stateless microservices
 - Persistent :- EBS, EFS which usually requires both PV and PVCs
 - Special volumes :- PVC binding to PV and hostPath which mounts file/directory from node's filesystem into pod
+- For object storage needs, we use S3 as well
 
 --------------------------------------------------------------------------------------------------
+
+If your app team wants to utilise file storage EFS, how we can integrate in K8S cluster?
+-
+- We'll create EFS file system in AWS in same VPC as of EKS cluster, attaching subnets in each AZ where worker nodes are running
+- We'll create storageClass for EFS which tells K8S how to provision PVCs on EFS
+- Then we'll create PV for EFS and then will create PVC to request storage
+- Then mount PVC to pod allowing multiple pods across AZs to share files (RWMany)
+
+- To match PV with PVCs
+  - When we create PVC, k8s tries to find match of suitable PV. This is done based on some rules
+
+--------------------------------------------------------------------------------------------------
+
+How to match PVC request with PV in K8S cluster?
+-
+- To match PV with PVCs
+  - When we create PVC, k8s tries to find match of suitable PV. This is done based on some rules
+  - **Storage class** :- PVC specifies storageClassName, it will bind to PV with that name only. If PVC doesnt define storageClassName K8S dynamically provisions default storageClass
+  - **Access Modes** :- PVC access modes must be subset of PV access modes (ReadWriteOnce)
+  - **Capacity** :- PVs storage capacity must be >= PVC request
+  - **Selector** :- Optional to use
+ 
+--------------------------------------------------------------------------------------------------
+
+If you create role in K8S, how will you bind that role to service account?
+-
+- Create serviceAccount
+- Create role for permissions within namespace
+
+<img width="739" height="257" alt="image" src="https://github.com/user-attachments/assets/0cc08238-fb74-4e82-8899-092c41625186" />
+
+- Bind role to service account using role binding
+
+<img width="752" height="320" alt="image" src="https://github.com/user-attachments/assets/4ab3c4a0-43c5-4650-81ae-d4a356c954a5" />
+
+- Use service account in pod yml
+
+<img width="718" height="259" alt="image" src="https://github.com/user-attachments/assets/c8430fe3-5b91-40a8-9737-b9b259a0a1d0" />
+
+--------------------------------------------------------------------------------------------------
+
+How will you bind the AWS IAM role to service account in K8S? How that service account will authenticate ith AWS role?
+-
+- Here we can use IAM Roles for Service Accounts (IRSA). It allows to bind IAM role to K8S SVC Account so pods can securely call AWS APIs without static IAM keys
+
+- Create IAM policy
+- Create IAM role with trust policy
+- Create service account annotated with IAM role
+- Use service account inside pod
+
+<img width="811" height="744" alt="image" src="https://github.com/user-attachments/assets/07eae24f-5386-445b-bc0a-310e2ed6145e" />
+
+--------------------------------------------------------------------------------------------------
+
+If I have created one PVC which is not getting bounded or volume is not getting created, how to debug this issue? If PVC is in pending state?
+-
+- Check PVC status. Status could be pending :- **kubectl get pvc**
+- Describe PVC for events like no PV available, waiting for volume to be created, storage class not found :- **kubectl describe pvc $name**
+- Check storage class if provisioner is correct EBS/EFS :- **kubectl get sc**
+- Check PVs to ensure capacity >= request, ensure accessModes match, ensure labels match PVC selector, storage class match
+- For EBS check if worker nodes have IAM permisiions to create/manage volumes
+
+--------------------------------------------------------------------------------------------------
+
+What is the difference between static and dynamic PV ?
+-
+- 
