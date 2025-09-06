@@ -246,7 +246,7 @@ How you can take backup of instance or block volumes in AWS?
 --------------------------------------------------------------------------------------------------
 
 
-# LTI Mindtree L2 Managerial 
+# LTI Mindtree L2 Managerial (23 Questions)
 
 
 What are the the specific activities which you do using kubernetes in your current role?
