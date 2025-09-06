@@ -1,4 +1,4 @@
-# LTI Mindtree L1
+# LTI Mindtree L1 (25 Questions)
 
 Explain the Kubernetes Architecture
 -
@@ -219,10 +219,12 @@ What you are doing for DR strategy in your current project?
 --------------------------------------------------------------------------------------------------
 
 State difference between SG and NACL
+-
 
 --------------------------------------------------------------------------------------------------
 
 How will you define subnet whether its public or private? State difference
+-
 
 --------------------------------------------------------------------------------------------------
 
