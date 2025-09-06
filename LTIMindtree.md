@@ -1,4 +1,4 @@
-# LTI Mindtree L1 (25 Questions)
+# LTI Mindtree L1 Technical (25 Questions)
 
 Explain the Kubernetes Architecture
 -
@@ -243,4 +243,62 @@ How you can take backup of instance or block volumes in AWS?
 - EBS lock volumes :- Using snapshot wich is point in time copy of volume stored in S3. Can be manual or automated via policies
 
 --------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+
+
+# LTI Mindtree L2 Managerial 
+
+
+What are the the specific activities which you do using kubernetes in your current role?
+-
+- In my current role, we're acticely using EKS for application deployments, scaling, monitoring and security
+- Application deployment and management (writing manifests)
+  - Creating and managing deployments, stateful sets, daemon sets for various microservices.
+  - Exposing services to world using clusterIP, nodeport and LB
+- Managing config maps and secrets to inject environment variables, DB creds and API tokens into pods
+- Creating and attaching PV like EBS and PVCs. Implementing snapshot based backup
+- Security and access control using RBAC to restrict pod/service access
+  - Applying network policies to limit pod to pod communication
+- Configuring HPA and autoscaler. Distributing workloads across multiple AZs
+- Integrated K8S deployments with jenkins pipelines using kubectl
+- Managing ingress controllers for external traffic routing
+- Integrate K8S resources with monitoring tools like datadog
+
+--------------------------------------------------------------------------------------------------
+
+Have you created any K8S cluster?
+-
+- Yes I've created K8S Clusters in AWS using EKS with terraform. I've set up VPCs, subnets, SGs, node groups and configured kubectl access
+- In my current role, for testing I've also setup cluster using minikube on Linux VMs
+
+--------------------------------------------------------------------------------------------------
+
+Which kind of storage your app team is using for K8S cluster?
+-
+- In our current setup on EKS, we're using different storage options based on workload type
+- **AWS EBS backed PV/PVC**
+  - Used for most stateful workloads like DBs, MQs and apps requiring persistent volumes
+  - We provision PV dynamically via storage class like gp2 or gp3
+  - App pods use PVC. PVCs requests storage, K8S dynamically provisions an EBS volume and mount it to pod
+ 
+<img width="756" height="315" alt="image" src="https://github.com/user-attachments/assets/54e6f82c-8dd0-4bab-95b3-d74879ae6a87" />
+
+- **AWS EFS backed PV/PVC**
+  - When multiple pods need shared storage, we use EFS
+  - PVC requests readwritemany access which only EFS supports
+ 
+<img width="759" height="333" alt="image" src="https://github.com/user-attachments/assets/0ebd8f34-85ff-4846-810b-ffc53a84a65f" />
+
+- Ephemeral / Empty dir (no PV/PVC)
+  - For stateless services where no PVC needed, vanishes when pod is deleted
+ 
+--------------------------------------------------------------------------------------------------
+
+How many types of volumes we can create in K8S cluster?
+-
+- Ephemeral volumes (temporary), persistent volumes (backed by external storage)
+- Ephemeral :- emptyDir, configMap, secrets
+- Persistent :- EBS, EFS which usually requires both PV and PVCs
+- Special volumes :- PVC binding to PV and hostPath which mounts file/directory from node's filesystem into pod
+
 --------------------------------------------------------------------------------------------------
