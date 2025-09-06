@@ -369,4 +369,37 @@ If I have created one PVC which is not getting bounded or volume is not getting 
 
 What is the difference between static and dynamic PV ?
 -
-- 
+- Static
+  - Admin manually creates PV inside cluster
+  - PVCs can bind only if tey find matching PV  (access modes, capacity, storage class)
+  - Pre creating EBS volumes and then defining PV that points to it, if no PVC matches, PV stays unused
+ 
+- Dynamic
+  - Auto creation of PVs when PV is requested
+  - PVC references storage class and K8S provisions volume on cloud/storage backend
+  - Avoids pe creation
+  - Common in cloud
+ 
+--------------------------------------------------------------------------------------------------
+
+My pod got stuck in container creating state, how to debug the issue?
+-
+- Check pod status. Common errors can be FailedMount, ImagePullBackoff, ErrImagePull, Insufficient resources :- **kubectl get pod**s or **kubectl describe pods $name**
+- Check volume mounts if PVC not bound. Storage issues like wrong access modes can cause this
+- Check image pull issues
+- Check node conditions. If node is not ready it can cause issue and pod gets stuck
+- Check if CNI plugin is broken
+
+--------------------------------------------------------------------------------------------------
+
+If pod saying failed to create sandbox, what does that mean?
+-
+- When pod says this, it means K8S couldnt even set up network sandbox that every pod needs before starting containers
+- Pod sandbox are created by kubelet which acts as network namespace for pod. If sandbox not created, no container will run
+
+- This could be due to CNI plugin issues which is used to attach pod to cluster network, can be due to firewalls of SG/NACL, node issues, misconfigured podspec
+
+- First describe pod, check kube-system pods
+
+--------------------------------------------------------------------------------------------------
+
