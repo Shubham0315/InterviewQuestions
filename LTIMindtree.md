@@ -403,3 +403,116 @@ If pod saying failed to create sandbox, what does that mean?
 
 --------------------------------------------------------------------------------------------------
 
+If pod fails to get IP assigned , what can be done?
+-
+- Its directly tied to CNI plugin which is responsible to assigning pod IPs and setting up routes
+- If CNI plugin is not installed then it happens, also if IP address pool get exhausted, IAM permission issues
+
+- To debug
+  - describe pod and look for events saying failed to assign IP
+  - Check subnet IP availability
+  - Check node status, IAM permissions
+ 
+--------------------------------------------------------------------------------------------------
+
+If in one of the service I am not getting logs, how to debug the issue? Pod is up and running
+-
+- If service is not showing logs it means either pod isnt writing logs or logging pipeline isnt capturing them
+- When we say a pod is not generating logs, it usually means that nothing is being written to stdout or stderr of the container processes.
+
+- Check pod status, ensure its running
+- Try fetching logs directly. If empty, maybe app isnt writing stdout/stderr :- kubectl logs $pod
+- Check logging agent in EKS its cloudwatch and ensure all pods running
+- Check app log path
+- Check for permissions/RBAC. If only one service has issue, check log agent permissions
+
+- If a pod is running but I don’t see logs, I first check logs with kubectl logs. If still empty, I exec into the pod to confirm the application is running and check whether it’s writing logs to a file instead of stdout/stderr. Many apps like Tomcat and Nginx log to files, so in that case I’d configure the container to redirect those files to stdout/stderr. If centralized logging is used, I’d also check that the logging agent (FluentD/FluentBit/CloudWatch) is correctly scraping that namespace and log path.
+
+--------------------------------------------------------------------------------------------------
+
+What is the K8S architecture?
+-
+
+--------------------------------------------------------------------------------------------------
+
+What is the difference between deployments, stateful sets, replica sets and daemon sets?
+-
+- Deployment → Deploy stateless.
+- StatefulSet → Stateful workloads.
+- ReplicaSet → Replication only.
+- DaemonSet → One pod per daemon (node).
+
+<img width="1721" height="677" alt="image" src="https://github.com/user-attachments/assets/ae33d984-5a46-4f68-939d-9a47563ac373" />
+
+--------------------------------------------------------------------------------------------------
+
+What is Pod Disruption Budget (PDB)?
+-
+- A Pod Disruption Budget is a Kubernetes resource that limits how many pods of an application can be voluntarily disrupted at a time. It ensures high availability during maintenance activities, like node upgrades, draining, or scaling down.
+- Without PDB, Kubernetes could evict all pods of a deployment during node maintenance, causing downtime. PDB ensures that a minimum number of pods remain available.
+- We define min or max available here
+
+--------------------------------------------------------------------------------------------------
+
+What is taints and tolerations?
+-
+- Taints are applied on Nodes while tolerations are applied on pods
+- To update K8S cluster with 3 worker nodes, we cannot do it once due to downtime issue. We drain one node, move all pods on another node, make it non scheduleable. Then bring it down, update it and remove non scheduleable status to make new version running
+- Here taints are used which is label or stamp given to node to make it non scheduleable
+- 3 types
+  - **noSchedule** :- node goes to non scheduling status
+  - **noExecute** :- all pods immediately stop working
+  - **prefereNoSchedule** :- used when node performance is declining
+  - Command :- **kubectl taint nodes $name key=value:effect**(3 above)
+ 
+- Toleration is applied to pod to allow it to be scheduled on nodes with matching taints
+- On noSchedule node we can add toleration to pod and run on it
+- Scheduler understand pod is there with tolerations still we can schedule resouces on the node
+
+--------------------------------------------------------------------------------------------------
+
+What is node selector and node affinity?
+-
+
+--------------------------------------------------------------------------------------------------
+
+What is pod affinity and pod anti affinity? Give me one example
+-
+- Pod affinity allows pod to be scheduled on same node as other pods that match certain labels
+- Used for performance, low latency communication and shared resources
+- frontend and backend of app
+
+- Pod anti-affinity ensures pod is not scheduled on same node as other pods taht match certain labels
+- Used to spread pods across nodes for HA and fault tolerance
+- If we've multiple DB pods and want them on diff nodes to avoid single node failure taking down all replicas
+
+--------------------------------------------------------------------------------------------------
+
+If my container is going into ImagePullBackoff due to authentication issue, how to make sure node download image and make pod up and running?
+-
+- It means Kubernetes cannot pull the container image from the registry because credentials are missing or incorrect.
+- Check for error in failing to pull image (imagePullSecret)
+- Create docker registry secret to authenticate to private repos
+- Attach secret inside pod.yml
+- Delete failing pod and then verify the authentication
+
+--------------------------------------------------------------------------------------------------
+
+My requirement is to create readOnly accesss for my application team, how to do that?
+-
+- Use RBAC
+- Craete role within NS allowing get, list, watch
+- Create roleBinding assigning role to user/group/SVC account
+- Verify access
+
+--------------------------------------------------------------------------------------------------
+
+How to connect to EKS from jump server/ bastion host?
+-
+- We need to ensure network access and proper K8S authentication
+- Bastion host must have connectivity to EKS cluster, kubectl installed, IAM role with permissions
+- Update kubeconfig for EKS cluster which fetches cluster info and generates kubeconfig file at ~/.kube/config
+- Verify kubectl connectivity from host
+
+--------------------------------------------------------------------------------------------------
+
