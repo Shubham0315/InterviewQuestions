@@ -1,4 +1,4 @@
-# Aligned Automation R2 Technical
+# Aligned Automation R2 Technical (11 Questions)
 
 From K8S perspective what standards do you follow for the on-premises deployments?
 - 
@@ -52,6 +52,7 @@ How to setting up splunk for any application?
 ---------------------------------------------------------------------------------------
 
 If there is performance related issue showing in splunk logs, how to troubleshoot it?
+-
 - Identify symptoms in logs like Slow response times, timeouts, High memory or CPU usage, frequent retries or failures
 - Narrow down time picker/range
 - Correlate logs across services like tracing request ID / correlation ID across services
@@ -184,7 +185,7 @@ I have deployed microservice on K8S cluster and I dont want that cluster to be a
 
 ---------------------------------------------------------------------------------------
 
-# Aligned Automation R4 (Technical)
+# Aligned Automation R4 Technical (16 Questions)
 
 As you are using multiple services like VPC, what is the best architecture in terms of security and networking point of view if we need to setup 3 tier architecture in AWS? Where will you place EC2 in that 3 tier architecture?
 -
