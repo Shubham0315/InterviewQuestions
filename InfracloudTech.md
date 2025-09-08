@@ -204,3 +204,134 @@ While installing docker on local there are predefined storage area. If you want 
 
 --------------------------------------------------------------------
 
+Please explain the K8S Architecture.
+-
+
+<img width="1244" height="376" alt="image" src="https://github.com/user-attachments/assets/445d18bc-7966-4c55-833f-04bf6da4f223" />
+
+--------------------------------------------------------------------
+
+What are the different CNI plugins available in K8S?
+-
+- CNI Plugins (Container Network Interface) provide networking capabilities to pods. Different plugins offer different features like network isolation, routing, policies, performance optimizations
+
+- **Calico** :- Provides L3 networking, supports network policies for security and traffic control. Popular in prod clusters
+- **Flannel** :- Simple overlay network. Easy to setup, used for basic pod-to-pod communication. No advanced network policies
+- **Canal** :- Combo of Flannel and Calico
+- **Amazon VPC CNI** :- Integrates K8S pods directly with AWS VPC networking. Each pod gets IP from VPC subnet, great for EKS clusters
+
+--------------------------------------------------------------------
+
+What are different CRIs (Container Runtime Interfaces)?
+-
+- K8S uses CRIs to talk to different container runtimes
+
+- **Docker Dockershim** :- Used to be default runtime of K8S
+- **containerD** :- Lightweight and prod runtime, used with cloud
+- **CRI-O** :- Designed specifically for K8S. Lightweight, minimal runtime focusing only on K8S workloads
+
+--------------------------------------------------------------------
+
+Assume we've K8S cluster with multiple master and 5 worker nodes and we've app deployed on worker nodes. Application has 2 replicas. Application is exposed using nodePort service on 30000 port. The user is hitting the request on 30000 port on worker node 5. Will he get the response?
+-
+
+<img width="858" height="164" alt="image" src="https://github.com/user-attachments/assets/be810eca-03db-49ae-be26-f6564b29eacd" />
+
+- When we expose service as nodePort, K8S opens same port on every node in cluster (master/worker)
+- Kube proxy configures ip rules to route incoming traffic on that port to one of the backend pods behind the service
+
+- If user sends request to worker5 : 30000
+  - Kube-proxy on worker5 sees traffic on 30000 and forwards it to one of the available pods (on worker2 or 4)
+  - Pod processes request and response is sent through worker5
+ 
+- Yes, the user will get a response from the application, even though no pod is running on worker5.
+
+--------------------------------------------------------------------
+
+Assume the master node went down and we're hitting it with DNS service. Will we get the response back from application?
+-
+- If we've K8S cluster with multiple master for HA and 2 worker nodes with replicas, service exposed.
+
+- DNS in K8S is managed by CoreDNS which resolves it to ClusterIP of service
+- One master node being down wont affect as long as we have multiple masters as API is still available through another master node
+- Here user request which goes to cluster IP and kube-proxy forward traffic to backend pods
+
+- So user will get response when accessing app via DNS service
+
+- DNS name resolvesto cluster IP - kube-proxy on worker keeps routing traffic to healthy pods
+
+- If all master nodes go down, the API server and DNS service will fail → new requests may fail (DNS resolution issues, new pods can’t be scheduled, etc.).
+
+--------------------------------------------------------------------
+
+What are the different ingress resources you have used? SSL offloading is happening at SSL, I want it to happen at pod level. How to achieve this
+-
+- Ingress resources define how external traffic is routed to services inside cluster
+  - Basic HTTP/S Ingress :- for host/path based routing
+  - TLS/SSL :- TLS cert/key stored in K8S secret. Ingress controller terminates SSL at ingress layer
+ 
+- Currently SSL offloading is at ingress means IC decrypts TLS traffic and sends plain HTTP to backend pods. We want End to end SSL where TLS should not terminate at ingress but pass through pod
+
+- First enable SSL passthrough at Ingress Controller
+- Configure pods/service for HTTPS as pods must have own SSL certs
+- Alternative :- Skip ingress for SSL and use nodePort/LB with SSL passthrough so directly forward traffic to pods that terminate TLS
+
+--------------------------------------------------------------------
+
+Are K8S secrets safe to use?
+-
+- Yes for sensitive info. We can also use Hashicorp Vault as external
+
+--------------------------------------------------------------------
+
+I have an application to be deployed in which I have 3 replicas. All 3 should be deployed on different nodes. How we can achieve this?
+- 
+- Daemon set. But worker nodes should also be 3 as it will schedule replicas on each node
+
+- **Pod Anti Affinity**
+  - K8S scheduling feature which ensures pods dont get scheduled on same node
+ 
+<img width="736" height="655" alt="image" src="https://github.com/user-attachments/assets/5d8e1eec-b372-45e7-878f-9dd191b80d5c" />
+
+  - podAntiAffinity tells scheduler not to place pods with same label on same node
+  - requiredDuringSchedulingIgnoredDuringExecution :- pods will not be scheduled together on a node
+
+--------------------------------------------------------------------
+
+State different volume access modes in K8S
+-
+- In K8S PV and PVCs define access modes to determine how volume can be mounted by pods
+
+- ReadWriteOnce :- Volume can be mounted as read-write by a single node. Its most common mode for EBS block storage
+- ReadOnlyMany :- Volume can be mounted read-only by many nodes simultaneously. Useful for sharing data which doesnt change
+- ReadWriteMany :- Volume can be mounted as read-write by many nodes at the same time.
+- ReadWriteOncePod :- Volume can be mounted by only one pod (even if multiple pods run on the same node). Provides stronger isolation than RWO.
+
+--------------------------------------------------------------------
+
+What is the role of kubeproxy?
+- 
+- Kube proxy runs on every node in K8S cluster
+- Its responsible for networking, making sure traffic sent to service reached correct IP/pod
+- Used for service discovery and LB. Ensures requests are forwarded to healthy pods (round robin)
+- Implements K8S services
+- If pod goes down it updated rules to route traffic to it
+
+- Used to generate IP for pod
+
+--------------------------------------------------------------------
+
+Assume that you have a K8S clusyer with single master node. But on single master I need 3 etcd instances. How to achieve this?
+-
+- etcd is key value store that backs control plane. For HA we can have 3/5/7 etcds deployed
+
+- We can run 3 etcd pods on one machine by
+  - Gicing each etcd member a unique name, data-dir and listening ports
+  - All 3 will for cluster but on same physical node
+ 
+- But this setup will not give high availability. If master node crashes, all etcd members are lost
+
+- So use 3 or 5 etcd members, each on a different master node. If you have only one master, then you should stick to a single etcd instance.
+
+--------------------------------------------------------------------
+
