@@ -335,3 +335,130 @@ Assume that you have a K8S clusyer with single master node. But on single master
 
 --------------------------------------------------------------------
 
+Have you ever backed up etcd data?
+-
+- Yes – backing up etcd data is a critical part of Kubernetes cluster management because etcd stores all cluster state
+
+- Use etcdctl which is official CLI for etcd
+- We can automate backups via cronjobs - Setup K8S cronJob or external scheduler that regularly runs **etcdctl snapshot save** and stores snapshots in safe location
+- Always take snapshot before upgrade of etcd or performing maintenance
+
+--------------------------------------------------------------------
+
+Explain flow of resource creation in terraform
+-
+- Write terraform config in .tf files using HCL
+- Initialize terraform to download provider plugins and initialize backend to ensure terraform env is ready
+- Run terraform plan to compare current infra state with desired, generates execution plan for resource config
+- Apply changes. Terraform talks to cloud provider API or target syatem to update resources. Also updates state file with latest metadata
+- TF stores current state of infra into state file which is used to track resources
+- We can also have post creation steps :- Print output variables, run provisioners
+
+--------------------------------------------------------------------
+
+We created an EC2 using terraform to deploy application. Here I need to change some attributes and now using plan its suggesting for replace. When we do replace our app goes down. How to avoid this?
+-
+- Here replcae suggesting resource replacement which means we've to destroy and recreate EC2 again. So our app may go down
+
+- To avoid this :-
+  - **create_before_destroy** :- ensures new resource created first before destroying older one
+ 
+<img width="714" height="206" alt="image" src="https://github.com/user-attachments/assets/39dcdd03-9fc0-4fd3-8663-38796cf5c625" />
+
+  - **ingore_changes** :- To prevent TF from replacing resource
+
+<img width="714" height="206" alt="image" src="https://github.com/user-attachments/assets/b2e231b2-9288-448b-b782-52b2333762e1" />
+
+  - Blue-green deployment or rolling update
+
+
+--------------------------------------------------------------------
+
+What is the purpose of remote statefile?
+-
+- TF keeps track of resources it manages using statefile
+- Statefile contains resource ID, metadata, dependencies between resources
+- TF uses state file to determine what exist, compare with desired config, plan/apply config
+
+- Remote state file is storing TF state outside our local machine like in S3
+- Multiple engineers can work on same infra safely. Avoids state conflicts that happen if everyone uses local state
+- Locking mechanism is there using dynamoDB to prevent simultaneous apply
+- Works well for multi env setups
+
+--------------------------------------------------------------------
+
+What are taints in terraform?
+-
+- Taint is a way to mark a resource as needing to be recreated on the next terraform apply
+- Sometimes resource is in bad state and we want to destroy and recreate it even if there is no config change
+- Command :- **terraform taint <resource_type.resource_name>**
+
+--------------------------------------------------------------------
+
+You are a team of 10 people and 2 people does terraform apply at same time. How to prevent this?
+-
+- Use a Remote Backend with State Locking
+- Use S3 with dynamoDB
+
+<img width="718" height="225" alt="image" src="https://github.com/user-attachments/assets/12fd590c-1baf-474f-9b77-cf4f49665eb7" />
+
+- When one engineer runs terraform apply, Terraform acquires a lock in DynamoDB. Any other attempt to apply will wait until the lock is released.
+
+--------------------------------------------------------------------
+
+In which file do you mention values of variables in terraform?
+-
+- Variables are stored in .tfvars file
+- Terraform automatically loads terraform.tfvars if present.
+
+- We can also pass values directly to command line :- **terraform apply -var="region=us-east-1" -var="instance_type=t2.micro"**
+
+--------------------------------------------------------------------
+
+If you want to submit something through your CI pipeline, then how to maintain TFVARS file as the values shouldnt be hardcoded each time?
+-
+- We can manage tfvars in CICD pipelines
+
+- Use env vars
+
+<img width="653" height="87" alt="image" src="https://github.com/user-attachments/assets/f42f7651-a629-4ed9-b0ae-d909434b5052" />
+
+- Store .tfvars in Version control per env
+- Use secret management systems
+
+--------------------------------------------------------------------
+
+What are modules in terraform?
+-
+- Modules help organize, reuse, and share infrastructure code.
+- To create infra, we can create module named folder and put all files inside it like main.tf, input,output files
+- terraform.tfvars will be placed at root level inside which values of variables are hardcoded along with source path from where we need to take reference of code config
+- When we apply config, TF will fetch all config details from child folder and create infra accoprding to infra code.
+
+- Using modules we can share reusable code to various teams to create their config just they need to modify tfvars files according to their requirements
+
+--------------------------------------------------------------------
+
+What is AWS cloudfront? How frequently is it good to refresh cloudfront at edge locations? How will it affect the performance?
+-
+- AWS Cloudfront is a Content Delivery Network service (CDN)
+- It distributes content globally using network of edge locations to reduce latency
+- Commonly used for static content like images/videos, dynamic content like API/web pages.
+
+- Origin is source of content like S3, EC2, HTTP endpoint
+- Edge locations are global caching nodes where content is stored closer to users
+- Distribution - how CF serves content
+
+- When content at origin changes, CF caches old version to edge locations
+- Static content refresh - Long TTL like hrs to days
+- Frequently updated content - Short TTL sec to minutes
+- Critical issues - Immediately
+
+--------------------------------------------------------------------
+
+What is the difference between DB backup and snapshot?
+-
+- 
+
+--------------------------------------------------------------------
+
