@@ -456,9 +456,35 @@ What is AWS cloudfront? How frequently is it good to refresh cloudfront at edge 
 
 --------------------------------------------------------------------
 
-What is the difference between DB backup and snapshot?
+What is the difference between DB backup and RDS snapshot?
 -
-- 
+- RDS Backup - Automated
+  - Daily automated backup of RDS instance which supports point in time recovery (PITR), we can restore DB to any second within backup retention period
+  - Its fully managed and automated by AWA
+  - Used for DR, compliance and ongoing protection of RDS instance
+ 
+- RDS Snapshot - Manual
+  - Its a user initiated, manual, storage level snapshot of RDS instance
+  - We can only restore DB to the exact time when snapshot was taken
+  - Stays in account until we manually delete it. We decide when to take
+ 
+--------------------------------------------------------------------
+
+Suppose you have EC2 server having volume of around 500GB. The volume is getting full when we deploy the application onto it. We have to increase size of volume, will we require restart or not?
+-
+- When we increase EBS volume size, no restart is required for EC2 as modifying EBS size is online operation. AWS Auto apply changes and new size is applied to OS
+
+- We need to extend the file system inside the OS (Linux/Windows) to use the extra space
+- Only if we're changing volume type from gp2 to gp3 or other, then restart is required
+
+--------------------------------------------------------------------
+
+How to enable/disable versioning in S3?
+-
+- Go to S3 bucket - properties - Bucket versioning - Enable (new versions kept for each object)
+- Go to S3 bucket - properties - Bucket versioning - Suspend (disables new version creation)
+
+- You cannot completely turn of versioning once enabled. We can only suspend it
 
 --------------------------------------------------------------------
 
