@@ -1,4 +1,4 @@
-# Infracloud Technologies Technical (42 Questions) 65 Minutes
+# ✅ Infracloud Technologies Technical (42 Questions) 65 Minutes
 
 What branching strategies do you use in your current project
 -
