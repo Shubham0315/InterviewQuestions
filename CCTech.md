@@ -100,3 +100,50 @@ Write a simple docker file to containerize a java app
 
 --------------------------------------------------
 
+Command to run docker container, go inside container
+-
+- Run docker container interactively :- **docker run -it ubuntu:22.4 /bin/bash**
+
+- Run container in bachground :- **docker run -d --name my-container nginx:latest**
+
+- To go inside container :- **docker exec -it $name /bin/bash**
+
+--------------------------------------------------
+
+I have javascript backend app and react frontend app. I am building backend app from maven and doing npm install for frontend app. We're deploying the apps manually. We've to pitch implementation plan to build and deploy apps from scratch using CI/CD approach to client.
+-
+- Highlight current pain points :- manual deployments are error prone, risk of downtime or misconfiguration
+- Slow release cycles
+
+- Benefits of CICD
+  - Faster and more reliable deployments
+  - Improved code quality and security
+  - Scalability and maintanability
+ 
+- Currently, manual deployments take a lot of time, are error-prone, and make tracking difficult. By implementing an automated CI/CD pipeline, we can release faster, reduce errors, and improve code quality. With automated builds, tests, and deployments, we can ensure consistent environments and quickly deliver features to production, which ultimately saves time and cost for the business. We can start with a small proof-of-concept and gradually scale it to the full application portfolio
+
+--------------------------------------------------
+
+How to launch EC2 instance from CLI?
+-
+- Configure AWS
+
+<img width="756" height="204" alt="image" src="https://github.com/user-attachments/assets/9aaf6169-25fd-45f4-b02f-ba5f1aa41bf6" />
+
+--------------------------------------------------
+
+User has admin access to AWS but he cant access EC2. What could be the reason?
+-
+- IAM policies or permissions boundary could be set for the user which is limiting to access
+- VPC network restrictions can be there
+
+--------------------------------------------------
+
+How to auto scale app/EC2 in AWS?
+-
+- While defining EC2, create auto scaling group as well which defines max, min capacity
+- Attach scaling policies. Scale EC2 based on cloudwatch alarms
+
+--------------------------------------------------
+
+
