@@ -1,4 +1,4 @@
-# ✅ CCTech Technical
+# ✅ CCTech Technical (14 Questions) 57 Minutes
 
 Write shell script to find factorial of 5?
 -
