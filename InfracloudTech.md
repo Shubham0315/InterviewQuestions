@@ -488,3 +488,47 @@ How to enable/disable versioning in S3?
 
 --------------------------------------------------------------------
 
+What is a NAT Gateway?
+-
+- Network Access Translation
+- AWS Managed service allowing private subnet resources like EC2 to access internet
+- Used for outbound internet access from private subnet
+
+- After placing app inside private subnet, we create NAT gateway inside public subnet with Elastic IP
+- Private subnet's route tables sends 0.0.0.0/0 traffic to NAT gateway and NAT Gateway forwards traffic to internet via Internet Gateway
+- It maps IP of app with route table or of LB and get things from internet
+
+- It supports TCP/UDP/ICMP
+
+- e.g :- Web server in public subnet and DB server in private. If DB needs to download security patches from internet, we can configure NAT gateway so it can go out to internet securely without getting exposed
+
+--------------------------------------------------------------------
+
+What exactly is serverless in lambda?
+-
+- In serverless we dont configure/provision any servers/VMs, AWS handles all infrastructure.
+- Lambda runs our code in response to events and scales automatically and we pay as we use
+- Here code is event driven like S3 creation, EC2 deletion, any update, etc
+
+- Suppose if we upload image to S3, lambda gets triggered which resizes the image and stores output in another bucket
+
+- We dont even know where our app is hosted, IP of it
+
+--------------------------------------------------------------------
+
+How to check memory available in server? Also disk space
+-
+- free command to get RAM total, used, free, available
+- top command to find top memory conusimg processes
+
+- Disk space :- **df -h**
+
+--------------------------------------------------------------------
+
+How to set no of CPUs in server?
+-
+- On linux use **taskset** or **maxcpus** parameter
+
+--------------------------------------------------------------------
+
+
