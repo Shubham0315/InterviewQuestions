@@ -1,4 +1,4 @@
-✅ HSBC Technical (11 Questions)  42 Minutes
+# ✅ HSBC Technical (11 Questions)  42 Minutes
 
 If we're deploying image on EKS cluster, I want to split that image name with colon with string variable in pipeline, how to do that?
 If we've multiple images wich we need to deploy on EKS cluster one by one using string variable inside pipeline, how to do that?
