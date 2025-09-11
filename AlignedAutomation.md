@@ -141,6 +141,8 @@ Difference between clusterIP, nodeport and LB services?
 
 <img width="721" height="324" alt="image" src="https://github.com/user-attachments/assets/fef1f2b1-e55c-46c9-a292-26c8ae7e875f" />
 
+<img width="774" height="202" alt="image" src="https://github.com/user-attachments/assets/0d169aa5-48c8-4861-a356-cc8474ba64c5" />
+
 - Node Port Mode
   - Services allow apps to be accessible within organization or network
   - Anyone with access to worker nodes can access our app
