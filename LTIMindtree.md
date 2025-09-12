@@ -17,7 +17,7 @@ Explain the Kubernetes Architecture
  
 --------------------------------------------------------------------------------------------------
 
-On EKS we've deployed 2 services nginx and deployment both having deployment and service components. How nginx deployment will know it should connect to respective nginx service and similarly for tomcat?
+On EKS we've deployed 2 services nginx and tomcat. Both having deployment and service components. How nginx deployment will know it should connect to respective nginx service and similarly for tomcat?
 -
 - In EKS or K8S cluster, services act as stable network endpoints to route traffic to appropriate set of pod/deployments
 - Deployment knows how to connect to its service is based on DNS service discovery
