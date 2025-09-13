@@ -59,7 +59,20 @@ If we have 5 apps on K8S cluster and have 5 individual services for them all of 
 
 What is NATting in K8S ? SNAT and DNAT
 -
+- Network Address Translation
+- Process to modify source or destination IP addresses of network packets as they travle between pods, nodes, external clients
+- Its required as pods have their own virtual IPs which are bot routable outside cluster/network
+- To enable communication between pods, nodes, external world, K8S uses DNAT and SNAT
 
+- SNAT (Source NAT)
+  - Changes source IP of packet
+  - When pod communicates with external world, pod's IP is replaced by Node's IP which ensures return traffic knows how to get back
+  - Used in outbound pod to external traffic
+ 
+- DNAT (Destination NAT)
+  - Changes destination IP of packet
+  - When service is exposed it has virtual IP. Traffic coming to service IP is DNAT'ed to one of the backend pod IPs
+  - Used to route pod traffic
 -------------------------------------------------
 
 On public cloud EKS we have multiple node. So even if one node goes down we can have another node up and reattch to master node. But in on-prem we cannot do that. If on-prem node goes down, how to make that node up and reattch to master?
@@ -93,6 +106,15 @@ Can we attach 2 EC2 IPs to single EC2 instance?
 
 What is OIDC?
 - 
+- OpenID Connect
+- Authnetication protocol built on top of OAuth2. It allows K8S to use external identity provider to authenticate users of service accounts
+- OIDC is common way to plug enterprise identity systems (SSO) in K8S
+
+- When user tries to access cluster, they're redirected to OIDC provider. User authenticates with credentials SSO. OIDC provider issues ID token JWT. User presents token to K8S API server which validates token against OIDC provider. If valid K8S maps identity to RBAC roles and grants access
+
+- OIDC is like centralized authentication for K8S SSO/MFA
+- No need to create or manage users manually
+- Integrates with corporate identity providers like Octa, Azure AD
 
 -------------------------------------------------
 
