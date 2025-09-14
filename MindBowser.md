@@ -1,6 +1,6 @@
 # ✅ MindBowser Technical (11 Questions) 22 Minutes
 
-In K8S master node is the brain of cluster. In public cloud master node should be managed by cloud provider. If our master node goes down and application is not running properly. As a devops engineer how to ensure master node should not be down and if it goes down how it should auto heal?
+In K8S master node is the brain of cluster. In public cloud master node should be managed by cloud provider. If in on-prem cluster our master node goes down and application is not running properly. As a devops engineer how to ensure master node should not be down and if it goes down how it should auto heal?
 -
 - K8S master node runs key components like etcd, apiserver, scheduler.
 - Worker nodes can continue running workloads even if master node is temporarily unavailable but we cannot schedule new pods or manage cluster
