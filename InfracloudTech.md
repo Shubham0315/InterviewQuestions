@@ -119,7 +119,8 @@ What are different types of networks in docker?
   - If user has access to host, he can directly access app inside container - Insecure
  
 - **Overlay**
-  - Enables multi host networking for docker swarm services. Useful in docker swarm and K8S when we've multiple hosts
+  - An overlay network in Docker is a virtual network that allows containers running on different Docker hosts (nodes in a cluster) to communicate securely, as if they were on the same local network.
+  - It’s built on top of existing host networks (like bridge, VLAN, or physical networks), hence the name overlay.
  
 - Commands :- **docker network create --driver=overlay shubham** (--driver not needed in bridge as default)
 
