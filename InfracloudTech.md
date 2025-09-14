@@ -322,13 +322,13 @@ What is the role of kubeproxy?
 
 --------------------------------------------------------------------
 
-Assume that you have a K8S clusyer with single master node. But on single master I need 3 etcd instances. How to achieve this?
+Assume that you have a K8S cluster with single master node. But on single master I need 3 etcd instances. How to achieve this?
 -
 - etcd is key value store that backs control plane. For HA we can have 3/5/7 etcds deployed
 
 - We can run 3 etcd pods on one machine by
-  - Gicing each etcd member a unique name, data-dir and listening ports
-  - All 3 will for cluster but on same physical node
+  - Giving each etcd member a unique name, data-dir and listening ports
+  - All 3 will form cluster but on same physical node
  
 - But this setup will not give high availability. If master node crashes, all etcd members are lost
 
