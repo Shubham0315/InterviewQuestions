@@ -39,3 +39,31 @@ Can you explain monitoring and logging used for your deployment?
 
 -----------------------------------------------
 
+If any scaling is required for the deployment you've created, how you can do it?
+-
+- For pod level scaling we use HPA for deployments using which we scale no of pods/replicas based on CPU/memory utilization, custom metrics like request latency, queue depth
+- We also use VPC for workloads that need more CPU/RAM per pod to adjust pod resource requets/limits automatically
+- If cluster dont have enough worker nodes, pods remain pending state. So we use cluster autoscalar which auto adds/emoves nodes in node group (EC2 auto scaling groups) when pods cannot be scheduled
+- To scale manually :- **kubectl scale deployment patient-service --replicas=5**
+
+-----------------------------------------------
+
+Have you used HPA in your current project? What kind of conditions you're setting in HPA manifest files?
+-
+- Yes. Since our app is mostly user facing with variable workloads deploying multiple services, we configure HPA based on CPU utilization and custom metrics like memory, request count, etc.
+- If our CPU usage crosses 70%, our services scale according to the condition we set in our HPA and deployment manifest files
+- In deployment file, we define min request and max limit for metrics based on which we need to scale resources
+- If we're scaling pods based on CPU, in HPA file mention min and max replicas or pod, what is the resource and under what condition scaling is to be done.
+- This ensures we can handle peak traffic without over provisioning while scaling down during low usage hours to save cost
+
+-----------------------------------------------
+
+How are you maintaining High Availability if you have 70 pods running on multiple nodes?
+-
+- We're usually managing pods using Deployments or Stateful Sets. Replica sets are ensuring desired replicas are always running. If we've 70 pods which are spread across nodes with 2-3 replicas per pod. So even if one pod fails, RS auto spins up replacement on healthy node
+- Also we're using node affinity rules to spread pods across multiple nodes or zones. This ensures even if one node goes down, only subset of pods is affected
+- Using l=health checks like liveness, readiness probes
+- We're using HPA as well for scaling. Using service traffic is distributed across healthy pods
+
+-----------------------------------------------
+
