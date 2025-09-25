@@ -1,6 +1,6 @@
 # ✅ Securonix L1 Technical (10 Questions) 30 Minutes
 
-How to setup a terraform project for multi environment setup like de, staging, prod?
+How to setup a terraform project for multi environment setup like dev, staging, prod?
 -
 - We can use modules structure which is collection of .tf files in a folder. We can reuse building blocks
 - We can call same module in different environments with different input variables
