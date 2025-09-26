@@ -67,11 +67,13 @@ Was the above migration done with downtime?
 
 ------------------------------------
 
-Its quite difficult to manage manifest files for different services or files like deployments, HPA, secrets, services, ingress. How are you managing them? Dis you evaluate any other tools to manage manifest files?
+Its quite difficult to manage manifest files for different services or files like deployments, HPA, secrets, services, ingress. How are you managing them? Did you evaluate any other tools to manage manifest files?
 - 
 - Yes, managing raw Kubernetes manifests (deployments, HPA, secrets, services, ingress) at scale quickly becomes complex, especially when dealing with multiple microservices, environments, and configuration variations
 - But for services under a single app you can say files will be mostly identical in structure, just need to make changes for some service related aspects like image name, service type, port to expose and all
 - We can actually use helm charts or GitOps tools like ArgoCD for the same. Helm is for complex tempating and chart reusability
+
+- Suppose 2 services are linked to each other like inbound and outbound. There we need to define ingress and egress rules like to, from, port, protocol, CIDR. We can use same content just by changing required parameters
 
 ------------------------------------
 
