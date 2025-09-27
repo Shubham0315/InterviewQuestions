@@ -1,6 +1,6 @@
-# ✅ CCTech Technical L2 (14 Questions) 57 Minutes
+# ✅ L1 CCTech Technical Assessment 
 
-# Note :- L1 was technical assessment
+# ✅ L2 CCTech Technical (14 Questions) 57 Minutes
 
 Write shell script to find factorial of 5?
 -
