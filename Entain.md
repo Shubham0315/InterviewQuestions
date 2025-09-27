@@ -1,4 +1,4 @@
-# ✅ Entain Technical SRE ( Questions) Minutes
+# ✅ Entain Technical SRE (13 Questions) 62 Minutes
 
 What is the problem you solved in your recent past?
 -
