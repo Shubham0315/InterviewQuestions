@@ -77,3 +77,79 @@ Its quite difficult to manage manifest files for different services or files lik
 
 ------------------------------------
 
+Scenario based on dockerfile provided
+-
+- Python service to be dockerized needs to do a code review of dockerfile
+- Check dockerfile and suggest if anything needs to be changed
+- The dockerfile size is very huge. So we can use multi stage builds to separate the build and runtime. Only strong base image we can use in 1st stage and copy required artifacts to next stage with minimal dependencies and pass the CMD/ENTRYPOINT in last stage for the runtime
+
+------------------------------------
+
+When to use blue green and when to use canary deployments?
+-
+- In blue green we maintain 2 environments. We can switch the traffic between 2. Once new version on green is validated then we can switch traffic from blue to green. If issue occur, rollback can be done intsnantly
+- We can use it for large released, critical apps, fast rollback cases
+
+- In canary we can gradually rollout new version to small subset of users first. Monitor performance, errors and metrics. Then slowly increase traffic until 100% runs on new version.
+- Rollback can be done by reducing canary traffic back to stable version
+- Used in frequent releases, non critical apps
+
+------------------------------------
+
+How do you justify the cost of maintaining 2 environments in blue green deployments? What factors are considered while applying this strategy?
+-
+- Cost Justification
+  - Even few mins of downtime can make huge revenue impact
+  - Rollback from failed release is just a traffic switch
+  - Testing in prod env replica so actual testing is done
+ 
+- Factors considered
+  - Business criticality
+  - Release frequency
+  - Traffic pattern
+ 
+------------------------------------
+
+When you are trying to spinup 10 ECR machines using terraform, 5 gets created and at the time of creation of 6th the node goes down on EKS. State file is stored at S3. How would you recover from this error of stale state?
+-
+- State file in S3 may not match actual infra. Some resources exist in AWS but TF may think they dont
+
+- First stop further TF runs and check cluster/node health
+- Check TF logs, inspect remote state objects and versions
+- Decide strategy to restore state
+- Check for the created resources first :- **terraform state list**
+- Refresh local view of TF resources :- **terraform refresh**
+- Import existing resources in state file :- **terraform import**
+
+- If EKS goes down, check ASG and let it recreate instance or manually trigger replacement
+
+------------------------------------
+
+We're running a Job is CI pipeline. One of the API call is getting timed out which DEV is also unable to figure out. How would you help them to figure this out?
+-
+- Reproduce issue locally by running same API call from CI runner and check if timeout happens. If its only in CI then likely network/firewall, DNS or proxy issue
+- Check connectivity like firewall, SG, NACL
+- Check in which env job is running exec into pod
+- Ask DEV team to enable API side logging as well. Check API latency dashboard, app logs, response times metrics
+- Check pinging on that API endpoint if its reachable, check network statistics.
+- Try curling into endpoint if its in external world
+
+------------------------------------
+
+What kind of incident managemnt tools you have used and what activities done?
+-
+- Ticketing,change tools used like JIRA, Cherwell
+- Worked in Release managemnt team where we needed to prepeare release documents and share with change management along with artifacts
+- RFC documentation preparation like Impact sheet, relase notes with jar file components
+- Worked on sev2, sev3
+
+------------------------------------
+
+What you do usually when you want help from other teams and they're not responding? How leadership address these kind of things?
+-
+- We always have syncup call with our client manager where we highlight pending issues
+- All client managers also have a call twice a week where they discuss if any dependency is there from other teams and help is needed. So we get our SPOC is any issue is pending since long
+- Also we have SLA of 72 hrs to resolve issue. So we try to get incident resolved within the timeline
+
+------------------------------------
+
