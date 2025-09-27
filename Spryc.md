@@ -1,4 +1,4 @@
-<img width="713" height="379" alt="image" src="https://github.com/user-attachments/assets/8ae919d0-2a10-42dc-85e4-00cbeb4ae92c" /># ✅ L1 Spryc Technical (11 Questions) 29 Minutes
+# ✅ L1 Spryc Technical (11 Questions) 29 Minutes
 
 Can you explain Role based access control with respect to IAM?
 -
