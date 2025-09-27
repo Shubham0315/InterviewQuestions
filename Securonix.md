@@ -1,4 +1,4 @@
-# ✅ Securonix L1 Technical (10 Questions) 30 Minutes
+# ✅ L1 Securonix Technical (10 Questions) 30 Minutes
 
 How to setup a terraform project for multi environment setup like dev, staging, prod?
 -
