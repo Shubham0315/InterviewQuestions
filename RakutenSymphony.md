@@ -1,4 +1,4 @@
-# ✅ Rakuten Symphony Technical (15 Questions) 26 Minutes
+# ✅ L1 Rakuten Symphony Technical (15 Questions) 26 Minutes
 
 Tell me about your work experience on K8S
 -
