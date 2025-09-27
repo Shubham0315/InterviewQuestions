@@ -1,4 +1,4 @@
-# ✅ LTI Mindtree L1 Technical (25 Questions) 30 Minutes
+# ✅ L1 LTI Mindtree Technical (25 Questions) 30 Minutes
 
 Explain the Kubernetes Architecture
 -
@@ -246,7 +246,7 @@ How you can take backup of instance or block volumes in AWS?
 --------------------------------------------------------------------------------------------------
 
 
-# ✅ LTI Mindtree L2 Managerial (23 Questions) 36 Minutes
+# ✅ L2 LTI Mindtree L2 Managerial (23 Questions) 36 Minutes
 
 
 What are the the specific activities which you do using kubernetes in your current role?
