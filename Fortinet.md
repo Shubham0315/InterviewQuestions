@@ -1,4 +1,6 @@
-# ✅ Fortinet L1 Technical ( 27 Questions) 58 Minutes
+# ✅ L1 Fortinet Technical Assessment
+
+# ✅ L2 Fortinet Technical ( 27 Questions) 58 Minutes
 
 Explain the architecture of your project which is deployed on EKS/K8S cluster
 -
