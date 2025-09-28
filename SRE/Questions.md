@@ -1,6 +1,7 @@
 # Site Reliability Engineering Principles and work domain questions
 
 How do you define Site Reliability Engineering (SRE) and how does it differ from traditional operations?
+-
 - SRE is about applying software engineering principles into operations and infrastructure problems. Its goal is to make systems more reliable, scalable and efficient by reducing manual work and automating processes
 - Traditional operations teams often focus on maintaining systems reactively by fixing issues when arise and perform manual task. SRE on the other side treats operations as a software problem. Using SRE we can build tools, automation proactively to prevent issues, enforce reliability through SLOs, SLIs and create systems that are fault tolerant by design
 - In my current role, instead of manually provisioning AWS infra, I automate it with terraform and have reduced setup time by 70%
@@ -8,3 +9,140 @@ How do you define Site Reliability Engineering (SRE) and how does it differ from
 
 ------------------------------------------------------
 
+Can you explain what "toil" means in SRE and how you’ve reduced it in your projects?
+-
+- Toil refers to repetitive, manual and operational work that doesnt add long term value but its necessary to keep systems running
+- Like manual server setups, repretitive deployments or constant resolution of similar incidents
+- In my current project I've reduced toil by automating infrastructure provisioning with Terraform to cut manual setup time by 70%
+- Also created jenkins, GitLab pipelines which does automated builds, test, deployments reducing manual intervention during releases by 50%
+- I've also implemented monitoring with DataDog and splunk which helped eliminate recurring outages and reduce time spent on reactive troubleshooting
+
+------------------------------------------------------
+
+What are SLOs, SLIs, and SLAs? Can you share an example of how you implemented or monitored them?
+-
+- These concepts in SRE are for measuring and managing reliability
+- SLI - Service Level Indicator. A metric that measures specific aspect of service's performance like availability, latency or error rate
+- SLI - Service Level Objective. The target or threshold for SLI such as 99.9% uptime or 200 ms response time
+- SLA - Service Level Agreement. A formal contract with customers that defines expected reliability and usually includes panelties if targets are not met
+
+- In one of my projects at Infosys, we defined an SLI as API availability and response time. The SLO was set to 99.9% uptime with less than 250ms latency. We implemented monitoring using Datadog and CloudWatch dashboards along with alerting on error rates and latency breaches. This gave us early warning signals and helped us address issues before they escalated into SLA violations for our clients.
+
+------------------------------------------------------
+
+How do you approach blameless postmortems? Can you walk through a real incident you handled?
+-
+- I see them as a way to learn from incidents without focussing on individual mistakes. The idea is to treat failures as opportunities to improve system and processes
+- Its about how to prevent in future
+- We always conduct blameless postmortem after issue to discuss the gap in implementation and lack of checks
+- In our pipeline we have automated validation pipeline using CI/CD to test ingress rules before applying them. This ensures we eliminate similar outages going forward and improved overall deployment confidence.
+
+------------------------------------------------------
+
+What strategies do you use to balance feature delivery vs. system reliability?
+-
+- Its one of the challenges in SRE
+- Define clear reliability targets like SLI, SLO, SLI. It provides a clear budget for allowable errors and downtime
+- Allocate a percentage of allowable failures for new feature deployments
+- Have incremental and safe deployments like canary, blue green, feature flags
+- Use centralized logging, metrics and tracing for quick detection of anomalies. Setup alerts on key SLIs for proactive intervention. Here we can quickly rollback and mitigate issues without affecting reliability
+
+------------------------------------------------------
+
+How do you ensure your IaC templates (Terraform/CloudFormation) are secure and reusable?
+-
+- Break infrastructure into modules like VPC, EC2, EKS. Each module should be parameterized wit variables
+- Use variables for env specific values
+- Use module versioning to prevent breaking changes into prod. Maintain TF state securely with remote backends
+
+------------------------------------------------------
+
+Can you explain how you’ve set up highly available and fault-tolerant architectures in AWS?
+-
+- Used high level principles such as HA, fault tolerance and DR
+- Core AWS strategies
+  - Did multi AZ deployments
+  - performed load balancing using ELB to distribute traffic across instances
+  - dis auto scaling of EC2/EKS nodes
+  - used RDS multi AZ for automated failover
+  - stored static assets in S3 with cross region replication
+  - Used EBS/EFS for backup and recovery
+  - Deployed in VPC with public and private subnets across AZ
+ 
+- For monitoring and logging used cloudwatch alarms with SNS notifications. Also used lambda for automated remediation
+
+- Web application with below ensures no single point of failure, scales automatically :- 
+  - ALB in front distributing traffic to EC2 in 2 AZ
+  - EC2 auto scaling groups
+  - RDS multi AZ for DB layer with automated failover
+  - S3 + CloudFront for storing assets
+  - Route 53 with health checks for DNS failover
+  - CloudWatch + SNS for monitoring, alarms, and automated response.
+
+------------------------------------------------------
+
+What challenges have you faced working with EKS/Kubernetes in production, and how did you resolve them?
+-
+- Upgrading EKS versions without downtime was tricky as master was managed by AWS but workers needed manual upgrades. so we used node groups with rolling updates so pods can be scheduled gradually, also leveraged PDB and HPA to ensure app availability during upgrades
+- For scaling apps due to sudden spikes we used HPA and CA for dynamic scaling
+- Debugging issues in distributed systems was hard so we used datadog for metrics, logging and tracing. Defined SLI/SLO for latency, availability and error rates to proactively detect issues
+
+------------------------------------------------------
+
+How do you monitor cloud resources (EC2, S3, VPC, IAM, etc.) for reliability and compliance?
+-
+- To monitor reliability use cloudwatch metric, alarms, ASG. Check S3 events for S3 bucket update.  Use VPC flow logs to monitor traffic patterns and detect blocked traffic. Use NACL/SG.
+- To monitor the compliance use AWS config to check if everything adheres to rules and regulations of the organization. Use centralized logging to store logs like S3. Use Config rules and lambda to auto fix non-compliant resources
+
+------------------------------------------------------
+
+What are some best practices for auto-remediation of incidents?
+-
+- Identify common, repeatable incidents suitable for automation like EC2 failure, unhealthy pods, low disk space
+- Maintain reliable monitoring and alerting system like datadog. Define thresholds and triggers precisely
+- Begin with low risk remediation tasks and gradually expand to more critical systems
+- Implement validation and verification like check service health, confirm metrics response
+- If remediation fails or causes issues, have rollback or fail safe mechanism
+- Integrate with incident management so as to update tickets with JIRA
+
+------------------------------------------------------
+
+Walk me through how you troubleshoot a production issue when latency suddenly spikes.
+-
+- When latency spikes in production, I first confirm the issue via monitoring and alerts, then define the scope—identifying which services and regions are affected.
+- I check recent deployments, review metrics, logs, and distributed traces to pinpoint the root cause—common culprits being resource saturation, network issues, or slow dependencies.
+- I apply immediate remediation such as scaling resources, restarting pods, or rolling back changes, then verify system stability.
+- Finally, I conduct a blameless postmortem to implement preventive measures and improve monitoring for the future
+
+------------------------------------------------------
+
+How do you use logs, metrics, and traces together for root cause analysis?
+-
+- Metrics help detect anomalies like spike or error rate and narrow down which service, region or instance is affected
+- Logs are used to investigate specific errors or exceptions tied to metric. It identifies patterns or repeated failures. Logs provide timestamp and context
+- Traces track request as it flows through distriuted systems or microservices. Identify latency or error
+
+------------------------------------------------------
+
+How do you secure communication between microservices in Kubernetes?
+-
+- Use K8S network policies to control traffic at pod level. Restrict which pods/service can communicate with each other. Ensures only authorized services can talk to each other
+- Use SVC accounts and RBAC to control API access. Assign least privilege roles to pods that calls K8S API or other services
+- Use ingress controller with TLS termination for external traffic, restrict egress to only required endpoints
+
+------------------------------------------------------
+
+How do you handle graceful termination of pods in Kubernetes?
+-
+- When pod is deleted or scaled down, K8S allows it to shut down cleanly rather than abruptly killing container to ensure resources are released properly and no data loss occurs
+- When we initiate pod deletion K8S sends TERM signal to container process and pods enters into terminating state
+- TerminationGracePeriodSeconds defines how long K8S wait before sending KILL signal, default is 30 sec
+- If container does not exit within grace period, K8S sends SIGKILL to forcefully terminate it
+
+- In Kubernetes, graceful termination ensures pods shut down cleanly without dropping in-flight requests. Kubernetes sends SIGTERM, waits for terminationGracePeriodSeconds, and then sends SIGKILL. I handle it using readiness probes to stop traffic, PreStop hooks to clean up resources, and SIGTERM-aware applications to finish ongoing work. This approach prevents downtime and ensures reliable pod shutdowns during scaling or upgrades
+
+------------------------------------------------------
+
+What’s your approach for handling database reliability and backups in an SRE role?
+-
+- 
