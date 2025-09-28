@@ -23,7 +23,7 @@ What are SLOs, SLIs, and SLAs? Can you share an example of how you implemented o
 -
 - These concepts in SRE are for measuring and managing reliability
 - SLI - Service Level Indicator. A metric that measures specific aspect of service's performance like availability, latency or error rate
-- SLI - Service Level Objective. The target or threshold for SLI such as 99.9% uptime or 200 ms response time
+- SLO - Service Level Objective. The target or threshold for SLI such as 99.9% uptime or 200 ms response time
 - SLA - Service Level Agreement. A formal contract with customers that defines expected reliability and usually includes panelties if targets are not met
 
 - In one of my projects at Infosys, we defined an SLI as API availability and response time. The SLO was set to 99.9% uptime with less than 250ms latency. We implemented monitoring using Datadog and CloudWatch dashboards along with alerting on error rates and latency breaches. This gave us early warning signals and helped us address issues before they escalated into SLA violations for our clients.
