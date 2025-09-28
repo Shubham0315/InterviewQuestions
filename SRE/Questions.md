@@ -323,4 +323,18 @@ You’re asked to reduce mean time to recovery (MTTR). What automations would yo
 
 How do you convince product managers to respect error budgets when they push for fast feature delivery?
 -
-- 
+- Show how exceeding error budget directly impacts customer experience and revenue
+- Use metrics from SLO/SLI dashboards to illustrate current reliability and risk
+- Involve PMs in planning, allocate remaining error budger for new features. Suggest incremental rollouts to release safely while respecting budgets
+- Show historical incident trends and potential downtime if error budgets are ignored
+
+------------------------------------------------------
+
+Developers push new features frequently, and reliability is suffering. How do you handle the tradeoff?
+-
+- Use SLOs, SLIs, and error budgets to quantify how frequent releases impact reliability.
+- Use canary releases, feature flags, or blue-green deployments to minimize impact of new features
+- Integrate automated testing, CI/CD pipelines, and proactive monitoring to catch issues early.
+- After incidents, conduct blameless postmortems and improve processes.
+
+------------------------------------------------------
