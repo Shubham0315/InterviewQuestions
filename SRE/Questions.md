@@ -174,3 +174,153 @@ Explain a scenario where your scripting reduced manual effort significantly.
 - Use bash script - Pull EC2 metrics from CLOUDWATCH CLI - Indetify instances exceeding CPU or memory thresholds - Restart unhealthy instances automatically - Send alerts via slack or email
 
 - I wrote a Bash script to automate EC2 health checks and restart instances when CPU exceeded a threshold. This eliminated manual monitoring, reduced incident response time, and ensured 24/7 reliability. It saved ~2 hours/day of manual work and made the system more scalable and resilient
+
+------------------------------------------------------
+
+Your production service is down. Walk me through your first 5 steps.
+-
+- Acknowledge the incident over alerts and inform stakeholders that its WIP
+- Check which system is affected looking at dashboards and identify whether its total outage or partial degradation
+- Rollback recent deployment if applicable or scale resources temporarily if traffic is more
+- Check logs data, check change history like GIT/Pipeline/Configs and correlate with failure time
+- If issue is beyond you scope, pull relevant teams and keep communicating status to stakeholders.Document steps taken to avoid in future
+
+- Once service is restored perform RCA and blameless portmortem
+
+------------------------------------------------------
+
+Latency suddenly spikes in one of your critical APIs — how do you troubleshoot?
+-
+- Check dashboards like latency, error rates
+- Correlate with recent changes. Ceck resources
+- To mitigate rollback the change, scale pods/instances or reroute traffic
+
+------------------------------------------------------
+
+You receive multiple alerts at once from different services — how do you prioritize?
+-
+- Identify business impact which is customer facing or revenue critical systems
+- Classify severity based on outages or degradation and other types
+- Mitigate critical issues first then address lower priority issues
+- Keep stakeholders updated on status of issue
+
+------------------------------------------------------
+
+A deployment just caused an outage — how do you roll back and prevent this in the future?
+-
+- Verify outage is linked to recent deployment and using blue-green, canary or kubectl rollout undo rollback it to restore latest stable version. Check service health returns to normal
+- To prevent future outages
+  - Add stronger CICD gates like security scans
+  - Use canary for gradual rollouts
+  - Track key metrics before user traffic begins
+  - Document incidents and update runbooks
+ 
+- If a deployment causes an outage, I immediately roll back to the last stable version and monitor system recovery. To prevent recurrence, I’d enforce automated tests, adopt safer rollout strategies like canary or blue-green, improve monitoring during deployments, and run a blameless postmortem to capture learnings
+
+------------------------------------------------------
+
+You’re getting too many false alerts from your monitoring system. What steps would you take to tune it?
+-
+- Analyze them and confirm if they're actionable or just noise. If CPU alert triggers during backups but service health is unaffected, thats a false alert
+- Adjust thresholds
+- Introduce multi signal alerts by combining CPU, pods restarts, error rate
+- Set clear severity levels
+- Every alert should map to clear documentation. If X fires, use Y
+
+------------------------------------------------------
+
+A dashboard shows CPU and memory usage are normal, but users still report slowness — what’s your approach?
+-
+- Reproduce user issue checking app response times, API latency, error rates
+- Check for app metrics like request/response latency, error rates like 400/500
+- Check DB, caches, MQs. Slow DB may bottleneck app
+- Look at network I/O as latency could come from high disk I/O wait times, LB misconfigurations
+- Review recent changes like deployment, configs, infra update
+- Mitigate while investigating like scale instances or pods
+
+------------------------------------------------------
+
+Logs are growing too fast and filling up disk space — how do you handle log rotation and retention?
+-
+- Configure log rotation strategy using logrotate to compress, archive logs. Stores at /etc/logrotate.conf
+- Also set retention policies and retention service. 7 days at S3
+- This ensures disk space is safe while maintaining compliance
+
+------------------------------------------------------
+
+An EC2 instance in production is unreachable — what checks do you perform?
+-
+- Check if instance is running, stopped, terminated
+- Check network connectivity using ping, telnet to IP. Check SG/NACL for allowed traffic
+- Check SSH access for instance using correct creds of key-value pair
+- Check CPU, memory, disk, process hangs
+- Check recent deployments, changes
+- Reoot instance if its unresponsive but all checks are OK
+
+------------------------------------------------------
+
+One of your S3 buckets accidentally exposed data publicly — what immediate and long-term actions do you take?
+-
+- Immediate actions to restrict access like S3 policy, block public access.
+- For long term enforce least privilege for all buckets, remove public ACLs unless strictly needed. Enable S3 server access logging, setup cloudwatch alerts for public bucket exposures. Automate compliance checks using config
+
+------------------------------------------------------
+
+A region in AWS goes down — how do you design your systems for high availability and fault tolerance?
+-
+- Deploy services across atleast 2 regions
+- Spread instances across multiple AZs to handle single AZ failures
+- Use cross replication for S3 and DBs. Automate regular snapshots
+- Design stateless services.
+- Automate deployments with terraform and setup monitoring
+
+------------------------------------------------------
+
+Your Terraform apply fails due to drift — how do you resolve it?
+-
+- Identify drift using plan command to see which resources have diverged from scripts
+- Assess impact of drift if its critical or minor
+- Correct the drift using apply to bring resources back in sync with config
+- To prevent future drift, enforce IAC only changes avoiding manual soncole changes
+
+------------------------------------------------------
+
+A stateful set in Kubernetes is losing data after pod restarts — what’s your approach?
+-
+- First check if PVCs are correctly attached and backed by durable storage
+- Verify storage class supports persistence across pod restarts like EFS
+- Ensure app writes data to mounted volumes rather than ephemeral pod storage
+
+------------------------------------------------------
+
+DNS resolution is failing inside Kubernetes pods — how do you troubleshoot?
+-
+- Verify /etc/resolv.conf inside pod and ensure pod's DNS policy is correct
+- Test DNS resolution
+- Verify Core DNS pods running and healthy
+- Ensure connectivity if pods can reach DNS service IP
+- Check for network policies that might block DNS traffic
+
+------------------------------------------------------
+
+You notice engineers often forget to rotate secrets — how would you automate this?
+-
+- Use secret manage tool lile secrets manager or vault
+- Configure auto rotation policies for credentials
+- Ensure app fetch secrets dynamically at runtime instead of hardcoding
+- Setup alerts if secrets like cert are nearing expiration or fail rotation
+
+------------------------------------------------------
+
+You’re asked to reduce mean time to recovery (MTTR). What automations would you introduce?
+-
+- Detect common failures and use remediation scripts for auto service restart, scale pods
+- Implement proactive health checks and alerts to catch issues before issues report them
+- Use K8S proes for auto restart pods on failure and auto replace unhealthy instances
+- Automate routine remediation tasks documented in runbooks via scripts
+
+------------------------------------------------------
+
+How do you convince product managers to respect error budgets when they push for fast feature delivery?
+-
+- 
