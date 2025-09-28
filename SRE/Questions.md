@@ -145,4 +145,32 @@ How do you handle graceful termination of pods in Kubernetes?
 
 What’s your approach for handling database reliability and backups in an SRE role?
 -
-- 
+- Use multi AZ deployments for HA using RDS. Deploy replicas to distribute read traffic and reduce load om primary DB. Set alarms for anomalies like high latency, failed requests
+- Enable RDS auto backups. Take manual snapshpots before upgrades. Replicate backups across regions to protect against regional outages
+
+------------------------------------------------------
+
+Can you give an example of a bash script you wrote for automation or monitoring?
+-
+- Disk usage monitoring script
+- Automated log rotation and cleanup for servers :- find . -type f -mtime +7 -exec rm -f {} ;
+- Log analysis and monitoring :- grep "ERROR" /var/log/app.log | awk '{print $1,$2,$5}' > error_report.txt
+
+------------------------------------------------------
+
+How do you structure error handling and logging in your scripts?
+-
+- Use exit on error and error codes. Check exit codes ($?) to detect failures. Use set-e in scripts to exit immediately if any command fails
+- Include context, timestamps and failing step in error messages
+- Separate log levels like INFO, WARNING, ERROR. Use log rotation strategy (/etc/logrotate.conf)
+- Scripts should return proper exit codes 0,1,2,4
+
+------------------------------------------------------
+
+Explain a scenario where your scripting reduced manual effort significantly.
+-
+- Auto EC2 health check and restarts.
+- If they become unhealthy due to resource usage or service crashes. Manual process of monitoring was time consuming and error prone.
+- Use bash script - Pull EC2 metrics from CLOUDWATCH CLI - Indetify instances exceeding CPU or memory thresholds - Restart unhealthy instances automatically - Send alerts via slack or email
+
+- I wrote a Bash script to automate EC2 health checks and restart instances when CPU exceeded a threshold. This eliminated manual monitoring, reduced incident response time, and ensured 24/7 reliability. It saved ~2 hours/day of manual work and made the system more scalable and resilient
