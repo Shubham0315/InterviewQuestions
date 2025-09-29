@@ -315,8 +315,8 @@ You notice engineers often forget to rotate secrets — how would you automate t
 You’re asked to reduce mean time to recovery (MTTR). What automations would you introduce?
 -
 - Detect common failures and use remediation scripts for auto service restart, scale pods
-- Implement proactive health checks and alerts to catch issues before issues report them
-- Use K8S proes for auto restart pods on failure and auto replace unhealthy instances
+- Implement proactive health checks and alerts to catch issues before users report them
+- Use K8S probes for auto restart pods on failure and auto replace unhealthy instances
 - Automate routine remediation tasks documented in runbooks via scripts
 
 ------------------------------------------------------
