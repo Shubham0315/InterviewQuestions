@@ -338,3 +338,221 @@ Developers push new features frequently, and reliability is suffering. How do yo
 - After incidents, conduct blameless postmortems and improve processes.
 
 ------------------------------------------------------
+
+Can you walk me through how you’d audit user activity in a production environment?
+-
+- Goal is to maintain accountability, security and compliance to have visibility about who did what, when and where in production
+- Enforce SSO with MFA. Use RBAC or least privilege to ensure users only have required access
+- Enable logging, capture all API calls in cloud env
+- Ship all logs to centralized logging platform like datadog which tags logs with user identity, timestamp, source IP and resource touched
+- Define rules for suspicious activities like failed logins, mass deletions. Trigger alerts
+- Perform periodic access reviews
+
+------------------------------------------------------
+
+Describe a time when you had to ensure a system was compliant with security standards (e.g., SOC 2, HIPAA, ISO 27001).
+-
+- While working for a telecom client, I am responsible to ensuring compliance with these standards
+- We've implemented strict priviledge access controls using RBAC and MFA and have centralzied all audit logs for real time monitoring through SIEM solution
+- Sensitive user data is encrypted in KMS at rest
+- We also have periodic access reviews and compliance checks through CICD pipelines
+
+------------------------------------------------------
+
+How would you implement audit logging in a Kubernetes cluster or API service?
+-
+- Define goals with compliance needs and alerting thresholds. Then configure API server with audit policy and logging backend
+- Forward audit records to central store like datadog or SIEM tool
+- Use immutability / object lock for compliance, encryption at rest and RBAC on log store
+- Set rules and alerts via SIEM. Correlate logs and traces for fast forensics and automated alerting
+- Regularly test and rotate/expire old logs per policy
+
+------------------------------------------------------
+
+How do you detect and respond to unauthorized privileged access in your environment?
+-
+- To detect unauthorized privileged access, I rely on centralized audit logs from Kubernetes, cloud providers, and IAM systems, ingested into a SIEM like Splunk or Datadog.
+- I set up alerts for high-risk actions such as privilege escalations, creation of new admin roles, or direct access to sensitive data.
+- MFA and Just-In-Time (JIT) access are enforced to reduce the attack surface.
+- When an alert is triggered, the incident response workflow automatically revokes the suspicious session, notifies the security team, and isolates impacted resources. We also run forensic analysis on audit logs and implement corrective actions to prevent recurrence
+
+------------------------------------------------------
+
+What metrics do you monitor to measure and reduce MTTR?
+-
+- **MTTD (Mean Time to Detect)**: How quickly an incident is identified.
+- **MTTA (Mean Time to Acknowledge)**: Time from alert to engineer acknowledgment.
+- **MTTR (Mean Time to Recovery/Repair)**: Actual time to restore service after detection.
+- **Incident frequency & recurrence rate**: Helps spot patterns and prevent repeat issues.
+- **Error budget burn rate / SLA impact**: Shows business/customer impact of downtime.
+- **Automation coverage (self-healing rate)**: % of incidents resolved automatically.
+
+------------------------------------------------------
+
+Explain how you’d design a system to self-heal after a failure.
+-
+- Implement metrics, logs and traces for all components like CPU, memory, API response times, error rates and latency. Use health checks. Configure centralized logging and monitoring. Define SLI/SLA/SLOs
+- Set up real time alerting for key metrics and integrate incident management tools to notify engineers
+- For infrastructure, use probes in K8S and RS/deployments to auto maintain desired no of pods. For node failure use ASG in cloud
+- For application level use circuit breakers, failover strategies (switch traffic to healthy instance/region)
+- Automate routine fixes like restart container, rollback deployment, clear cache
+- Every automated remediation should be logged with timestamp, user and account used
+
+------------------------------------------------------
+
+Can you walk through a recent incident you managed and how you reduced the recovery time?
+-
+- One of our microservices in the telecom platform experienced intermittent API failures during peak traffic, causing customer requests to fail and latency to spike
+- My responsibility was to identify the root cause quickly, restore service, and reduce the mean time to recovery (MTTR) to minimize customer impact
+- I first checked centralized monitoring dashboards (Datadog) and logs to identify that a downstream service was timing out.
+- Using Kubernetes liveness probes and auto-restart, I quickly restarted the affected pods.
+- To reduce MTTR for the future, I automated alerting with DataDog, created a runbook for similar failures, and implemented a CI/CD check to catch misconfigurations causing downstream timeouts
+
+------------------------------------------------------
+
+How do you integrate alerting and runbooks to improve incident response time?
+-
+- Collect metrics, logs and traces from all services into monitoring system. Define alerts for key SLI like error rate, latency, resource utilization
+- We've integrated alerts with incident management tool to notify engineer
+- We're also maintaining runbooks with procedures for known failure scenarios like pod crash, service timeout, DB connection issue
+- Automated repetitive remediation tasks possible
+- Log all actions taken for PIR. Also we update runbooks based on new outcomes
+
+------------------------------------------------------
+
+What are P50, P90, P99 response times and why are they important?
+-
+- These are percentile metrics used to measure system latency and response times
+- P50 :- 50% of requests are faster than response time and 50% are slower
+- P90 :- 90% of requests are faster than response time and 10% are slower
+- P99 :- 99% of requests are faster than response time and 1% are slower
+
+- P50 shows typical experience but P90/P99 reflect worst case scenario that can frustrate users
+- Higher P99 latency may indicate tail latency issues due to resource contention, slow dependencies
+
+- Tracking these percentiles helps identify bottlenecks, set meaningful SLOs, and ensure high performance even for the slowest requests.
+
+------------------------------------------------------
+
+How do you identify and resolve API latency bottlenecks in a distributed system?
+-
+- Collect latency metrics for service and endpoint using DataDog. Monitor percentiles to catch both avg and tail latencies. Track error rates, resource utilization to correlate performance degradation
+- Centralized logs help identify slow queries, long running operations or exceptions
+- Identify dependencies like DB, cache causing high latency
+
+- Resolving techniques:-
+  - Optimize DB queries
+  - Implement response caching for idempotent endpoints
+  - Implement circuit breakers to prevent cascading failures from slow services. Use retry with exponential backoff to handle transient latency spikes
+  - Scale service using HPA. Set alerts for tail latency thresholds
+
+- Continuous monitoring ensures we maintain low latency and quickly detect regressions.
+ 
+------------------------------------------------------
+
+Can you share an example where you significantly improved application performance?
+-
+- In my previous role, our telecom API service was experiencing high P99 latency during peak hours, affecting customer experience
+- My goal was to identify bottlenecks and improve overall application performance to meet SLO
+- I first checked centralized monitoring dashboards (Datadog) and logs to identify that a downstream service was timing out
+- These changes reduced P99 latency by 60%, improved throughput, and kept the service within SLA during peak traffic, while also lowering cloud resource costs due to optimized utilization
+
+------------------------------------------------------
+
+How would you design a dashboard to monitor latency SLIs?
+-
+- Define SLIs clearly for latency like P50, P90, P99, Tie them to SLOs like 99% of requests should respond within 300ms
+- Use metrics from DataDog and capture duration histograms
+- Dahboard components :- latency percentiles, error correlation, regional view
+- Alert if P99 > SLOs. Combine latency and error alerts to reduce noise
+
+------------------------------------------------------
+
+If you notice the P99 latency spiking suddenly, what’s your troubleshooting approach?
+-
+- Check dashboard to ensure its real and not a false alert. Look at all relevant percentiles and error rates
+- Check affected endpoints and services
+- Check downstream dependencies like DB, caches
+- Review recent changes like deployments, configs, infra changes
+- Check logs for timeout, retries and exceptions
+- To mitigate immediately apply circuit breakers, throttling and rerouting traffic to healthy pods. Scale services using HPA to releive pressure
+- Check root cause and update runbooks
+
+------------------------------------------------------
+
+What is a circuit breaker pattern, and how does it improve microservices reliability?
+-
+- CB is used in distributed systems to prevent cascading failures when service is failing. If failure rate exceeds defined threshold, circuit trips and prevents further calls for a set period. After cooldown circuit allows some test calls to see if service has recovered
+- Stages
+  - Closed: Requests flow normally; failures are counted.
+  - Open: Requests fail immediately to avoid stressing the failing service.
+  - Half-Open: A few requests are allowed to test if the service has recovered.
+ 
+- Why It Improves Microservices Reliability?
+  - Stops downstream services from being overwhelmed by repeated calls to a failing service.
+  - Failing fast avoids waiting for timeouts or retries, improving overall system responsiveness.
+  - Half-open state allows the system to test the dependency before fully resuming traffic.
+  - Often combined with retries, fallback responses, or bulkheads to improve robustness.
+ 
+------------------------------------------------------
+
+How do you implement retry logic without causing cascading failures?
+-
+- Blind retries can overload a failing service, causing cascading failures across the system.
+- Best practices :-
+  - Exponential backoff gradually increasing wait time between retries
+  - Set max no of retries to avoid infinite loops
+  - Combine retries with CB to stop retries when downstream service is unhealthy
+  - Retry on timeouts, 5xx errors or network failures
+ 
+- In a microservices environment, our payment service depended on an external API that occasionally timed out. We implemented retries with exponential backoff and jitter, limited to 3 attempts. All operations were idempotent, and a circuit breaker stopped retries when the API remained unavailable. This approach improved success rates without overloading the external service or causing cascading failures to other microservices
+
+------------------------------------------------------
+
+Can you explain backoff strategies and when you’d use them?
+-
+- A backoff strategy controls the delay between retry attempts when a request to a service fails.
+- The goal is to avoid overwhelming the service and reduce the risk of cascading failures. Commonly used with retries, rate-limiting, or circuit breakers.
+
+- Fixed backoff :- retry after constant delay. Used for low traffic, predictable failures
+- Exponential :- gradually increase time (double time). Medium to high traffic
+- Linear :- Delay increases linearly with each retry. Used in low impact scenarios
+
+------------------------------------------------------
+
+Describe a scenario where a downstream dependency was failing — how did you keep your service resilient?
+-
+- In our telecom platform, one of our microservices depended on an external payment gateway that occasionally experienced high latency or outages during peak traffic
+- My goal was to ensure our service remained responsive and didn’t cascade failures to other dependent microservices while the payment gateway was unstable
+- I implemented a circuit breaker around the payment gateway API to fail fast when error rates exceeded thresholds.
+- I added retry logic with exponential backoff. I also monitored latency and error metrics in Datadog and configured alerts to detect recurring issues proactively.
+
+------------------------------------------------------
+
+How would you design a dependency health check mechanism?
+-
+- They ensure that your service only interacts with healthy upstream/downstream services, preventing cascading failures and reduce latency spikes.
+- Key components are liveness, readiness probes
+- Monitor metrics like response time, latency, error rate, capacity utilization and available percentage
+- Define thresholds for unhealthy states like error rate > 5%, P99 latency > 300ms
+
+------------------------------------------------------
+
+What are the trade-offs between retries and timeouts, and how do you balance them?
+-
+- Retries :- attempting the same request again when a failure occurs
+  - Its to improve reliability for transient failures
+- Timeouts :- Maximum time a client waits for a response before considering the request failed.
+  - Avoids waiting indefinitely for slow or unresponsive service
+ 
+- To balance them
+  - set reasonable timeouts :- if P99 latency is 200ms, timeout 300ms
+  - Retry only on transient failures and milit no of retries
+  - Combine with backoff
+  - Track all metrics to adjust timeouts and retry polices dynamically
+ 
+------------------------------------------------------
+
+
+
+- 
