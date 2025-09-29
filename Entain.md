@@ -1,4 +1,6 @@
-# ✅ L1 Entain Technical SRE (13 Questions) 62 Minutes
+# ✅ L1 Entain Technical Assessment SRE
+
+# ✅ L2 Entain Technical SRE (13 Questions) 62 Minutes
 
 What is the problem you solved in your recent past?
 -
