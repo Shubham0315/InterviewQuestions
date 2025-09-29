@@ -4,7 +4,7 @@
 
 Explain the architecture of your project which is deployed on EKS/K8S cluster
 -
-- We're jsing AWS EKS to manage K8S clusters which provides control plane components like API server, scheduler, etcd while we're managing our worker nodes using EC2 and fargate
+- We're using AWS EKS to manage K8S clusters which provides control plane components like API server, scheduler, etcd while we're managing our worker nodes using EC2 and fargate
 - Cluster is setup in such a way that VPC is there with private/public subnets. Worker nodes are deployed in private subnets which actually runs apps. Public subnets hosts ALBs for ingress traffic
 - Application is containerized using docker. For each microservice we're creating dockerfile running it as K8S deployment with multiple replicas. We're using cluster IP for inter service communication and LB/ingress for external traffic
 - We're having ALB ingress controller managing routing of traffic to services. Ingress defines our path/host based routing domains
