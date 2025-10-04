@@ -76,4 +76,21 @@ You did a terraform apply and state file is updated. Now if in AWS UI you delete
 
 Can you explain autoscaling? What are the types?
 -
-- 
+- Frequent question
+- Replica sets, HPA and VPA for pods
+- Node or cluster autoscaling for nodes. Auto scaling groups
+
+------------------------------------------------------
+
+What is load balancing? What are types of LB?
+-
+- LB is used to distribute incoming network or app traffic across multiple servers or instances to improve app performance, ensure HA, prevent single server from being overwhelmed
+
+- Based on OSI layers there are 3 types of LB
+  - Application LB (ALB) :- Happens at HTTP/S layer. Traffic can be routed based on URL, host, path. Used for web apps and microservices
+  - Network LB (NLB) :- Happens are L4. Used for apps where we dont want latency issues like gaming apps. Data transferred in small chunks of packets so that server wont consume all resouces and we get required response without latency. Handles TCP, UDP, ELS traffic
+  - Gateway LB (GWLB) :- Used with virtual applicances like VPC, firewall. Integrates with palo alto firewalls.
+ 
+------------------------------------------------------
+
+
