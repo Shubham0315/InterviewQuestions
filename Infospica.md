@@ -1,4 +1,4 @@
-<img width="850" height="196" alt="image" src="https://github.com/user-attachments/assets/37dbe2ef-2ca4-43b2-8720-05a2903c4e1f" /># ✅ L1 Infospica Technical ( Questions) 25 Minutes
+# ✅ L1 Infospica Technical ( Questions) 25 Minutes
 
 In past 6 months which tools have you used mostly? How are you deploying applications onto servers?
 -
