@@ -87,10 +87,57 @@ What is load balancing? What are types of LB?
 - LB is used to distribute incoming network or app traffic across multiple servers or instances to improve app performance, ensure HA, prevent single server from being overwhelmed
 
 - Based on OSI layers there are 3 types of LB
-  - Application LB (ALB) :- Happens at HTTP/S layer. Traffic can be routed based on URL, host, path. Used for web apps and microservices
+  - Application LB (ALB) :- Happens at HTTP/S layer. Traffic can be routed based on URL, host, path. Used for web apps and microservices. We can use ALB inside public subnet for traffic distribution
   - Network LB (NLB) :- Happens are L4. Used for apps where we dont want latency issues like gaming apps. Data transferred in small chunks of packets so that server wont consume all resouces and we get required response without latency. Handles TCP, UDP, ELS traffic
-  - Gateway LB (GWLB) :- Used with virtual applicances like VPC, firewall. Integrates with palo alto firewalls.
+  - Gateway LB (GWLB) :- Used with virtual applicances like VPN, firewall. Integrates with palo alto firewalls.
  
 ------------------------------------------------------
 
+Lets say you have many instances and there is ALB in place. How ALB knows the incoming request to be routed to specific EC2 or app?
+-
+- User request is received by ALB at L7 and it makes routing decisions based on ingress rules we configure
+- We can use Ingress with Ingress controllers. Ingress have capability to route traffic to different endpoints or context path or services.
+- Here we can configure rules inside config file of LB to let ALB know where to route request
+- Use target groups like EC2, Lambda, IP to ensure only healthy targets receive traffic
 
+- We can also configure listener rules for specific ports. Listener exmines request and applies listener rules
+
+- We can also make use of service concept where we define labels and selectors.
+
+------------------------------------------------------
+
+Explain difference between SG and NACL
+-
+- Frequent question
+
+------------------------------------------------------
+
+Can you explain what is CICD and how do you setup in your project?
+-
+- Frequent question
+- Define stages like checkout, build, test, push, deploy
+- CI auto builds, test and integrate code frequently whenever dev push changes to SCR. Detects integration issues early and maintain code quality
+- CDel auto prepeares app for deployment to any env but with manual approval before production. After CI when code i packages, artifact is deployed auto to staging or test env. On prod we make artifact ready which needs manual approval
+- CDep auto deploys app to prod after all tests are passed. Every time code change passes test, it auto goes live
+
+------------------------------------------------------
+
+What is blue green and canary deployments? Which has downtime
+-
+- Frequent question
+- Both are designed to have no downtime. Blue green can have microseconds of downtime
+
+------------------------------------------------------
+
+What kind of monitoring do you support and use?
+-
+- Frequent question for SRE
+- Datadog, cloudwatch and splunk
+
+------------------------------------------------------
+
+What is the most expeptional milestone in your career? Major highlight
+-
+- Automating deployments for one project using CICD and jenkins. For that app before they were deploying apps manually in webspehere console
+- Conducting 50 BAU releases independently
+- 
