@@ -1,4 +1,4 @@
-# ✅ L1 Allvue Technical ( Questions) 48 Minutes
+# ✅ L1 Allvue Technical (15 Questions) 48 Minutes
 
 What all AWS services have you used in your role?
 -
@@ -140,4 +140,4 @@ What is the most expeptional milestone in your career? Major highlight
 -
 - Automating deployments for one project using CICD and jenkins. For that app before they were deploying apps manually in webspehere console
 - Conducting 50 BAU releases independently
-- 
+
