@@ -1,4 +1,4 @@
-# ✅ L1 Equifax Technical SRE ( Questions) 38 Minutes
+# ✅ L1 Equifax Technical SRE (19 Questions) 38 Minutes
 
 What git commands do you use on daily basis as a DevOps Engineer?
 -
