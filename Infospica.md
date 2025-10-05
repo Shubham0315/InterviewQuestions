@@ -1,4 +1,4 @@
-# ✅ L1 Infospica Technical ( Questions) 25 Minutes
+# ✅ L1 Infospica Technical (11 Questions) 25 Minutes
 
 In past 6 months which tools have you used mostly? How are you deploying applications onto servers?
 -
