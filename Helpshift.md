@@ -76,5 +76,106 @@ How do you design a good state management using S3 and dynamoDB?
 
 ---------------------------------------------------
 
+What are the steps to remove or disable lock? What set of commands does terraform have for the same?
+-
+- When we use remote backend like S3 + DynamoDB, terraform auto places lock in DynamoDB whenever we run commands
+- When we do terraform apply, it contains lock ID section if apply is getting failed
 
+- To remove or disable lock
+  - Use terraform force-unlock. Use if no one is running terraform on that state file :- **terraform force-unlock $Lock_ID**
+  - Disable locking temporarily :- **terraform plan -lock=false**
+  - Manually delete lock from DynamoDB, if terraform force-unlock fails.
+ 
+---------------------------------------------------
+
+How do you handle secrets in terraform?
+-
+- Frequent questions
+- Hashicorp vault and AWS secrets manager
+
+---------------------------------------------------
+
+Can you tell me a practical example of how to deploy a AWS VPC using terraform scripts?
+-
+- Frequent question about VPC architecture and modules
+- Define VPC, subnets, SG, NACLs along with CIDR's for each and all resources should have vpc id attached inside specific resource block to identify resource belonging to which VPC
+- Rest is below architecture
+
+<img width="1848" height="621" alt="image" src="https://github.com/user-attachments/assets/035ee314-c282-427d-9d39-8dc0ec43ed96" />
+
+<img width="1849" height="488" alt="image" src="https://github.com/user-attachments/assets/bb457e73-aa59-46ea-81c8-f60e3fcad539" />
+
+---------------------------------------------------
+
+Difference between CPU utilization and load average in Linux
+-
+- CPU utilization tells us how much time CPU spends working vs idle
+  - If its 90% means CPU is busy 90% of the time, but not necessarily overloaded
+  - Commands to check top and vmstat
+ 
+- Load average tells us how many processes are waiting for CPU time or I/O at given moment
+  - Commands to check is uptime
+ 
+---------------------------------------------------
+
+Can you tell me how to find load average of any system in linux? what are 3 main numbers in load average?
+-
+- Using uptime command
+- It represents system load over last 1, 5, 15 mins
+- load average: 0.80, 0.65, 0.50
+  - This represent average load in last 1,5, 15 mins
+
+---------------------------------------------------
+
+How do you find out most I/O consuming processes in linux?
+-
+- Using iptop command which shows real time disk I/O per process
+- Using top command it shows CPU and memory. So we can use htop
+- Using lsof command to see which files a process is reading/writing
+
+---------------------------------------------------
+
+How to check connectivity between 2 instances?
+-
+- telnet command :- **telnet IP PORT**
+- Ping command :- **ping IP**
+- ssh test :- **ssh user@IP**
+
+---------------------------------------------------
+
+How do you identify if your system is capable of handling memory related workloads? How to check if its choking on memory?
+-
+- Check total memory and usage using free command
+- Check memory usage per process using top command
+- Check swap memory. High SWAP means system is running out of RAM
+- Check for OOM events in logs
+
+---------------------------------------------------
+
+Can you explain some TCP connection states like what connection state you usually see when you see charts of TCP connections active ?
+-
+- ESTABLISHED :- Connection is open and data can flow. Active sessions between client and server
+- LISTEN :- Server is waiting for incoming connections. Nginx listening on port 80
+- CLOSED :- No connection exist
+- TIME_WAIT :- Connection fully closed, short delay before freeing socket 
+
+- We can check this using netstat command
+
+---------------------------------------------------
+
+Command to check what connections are active in your machine
+-
+- netstat command
+- n to show numeric IP/ports, t for TCP connections
+- lsof to list open network connections
+
+---------------------------------------------------
+
+How do you kill process and what exact flags we can use for it?
+-
+- kill PID :- sends SIGTERM signal 15 to gracefully terminate process
+- kill -9 PID :- SIGKILL signal to force kill
+- killall Process_name :- to kill all isntances of that process
+
+---------------------------------------------------
 
