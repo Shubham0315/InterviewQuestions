@@ -37,6 +37,8 @@ Can you tell me basic difference between count and for_Each in terraform?
 - For_each is used when we want to create multiple instances of resource from map or set, where each instance has unique key
   - Each resource has stable key so terraform wont recreate everything if the order changes
 
+<img width="766" height="452" alt="image" src="https://github.com/user-attachments/assets/14b874be-20b3-4b25-a151-cf0aa56141f6" />
+
 ---------------------------------------------------
 
 How do you structure terraform for larger environment? How does your directory structure look like in a complex environment wrt modules, workspaces, statefiles?
@@ -76,4 +78,3 @@ How do you design a good state management using S3 and dynamoDB?
 
 
 
-<img width="766" height="452" alt="image" src="https://github.com/user-attachments/assets/14b874be-20b3-4b25-a151-cf0aa56141f6" />
