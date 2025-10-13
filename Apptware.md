@@ -64,3 +64,31 @@ In cloudwatch, what all things have you worked upon?
 
 ---------------------------------------------------------
 
+Have you worked on cloudwatch alerts? How did you configure them?
+-
+- Yes, I’ve worked extensively with Amazon CloudWatch to set up alerts for infrastructure and application monitoring.
+- I configured CloudWatch alarms to monitor EC2 instance metrics such as CPUUtilization, DiskReadOps, and StatusCheckFailed, as well as application logs pushed via CloudWatch Logs.
+- I created alarms that trigger SNS notifications whenever a metric crosses a defined threshold — for example, CPU utilization > 80% for 5 consecutive minutes. These alerts were integrated with our Slack channel using an SNS
+
+- Cloudwatch - alarms - create - choose metrics - set threshold conditions - choose SNS topic for notification like email, SMS, slack
+
+---------------------------------------------------------
+
+In SNS what all options do we have for alerts?
+-
+- In Amazon SNS (Simple Notification Service), we can send alerts or notifications through multiple delivery options — called protocols — depending on how we want to notify users or trigger actions.
+
+- Email :- send email to subscribers email addresses
+- SMS :- sends SMS to mobile numbers, text messages for users if they cannot access service/site
+- SQS Queue :- sends message to amazon SQS queue
+
+---------------------------------------------------------
+
+Did you face any challenges in setting up SMS notifications delivery?
+-
+- I did face some challenges related to region restrictions, cost control and message delivery reliability
+- Our SNS SMS delivery was not region specific, not all regions support SMS sending. So we had to ensure SNS topic was created in a region that support SMS
+- Another challenge was SMS spending limits. We had to open ticket to increase monthly spend quota for prod alerts
+
+---------------------------------------------------------
+
