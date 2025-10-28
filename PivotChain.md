@@ -91,3 +91,130 @@ How do you monitor the applications? What tools do you use?
 
 ---------------------------------------------
 
+# ✅ L2 Pivot Chain Technical (16 Questions) 17 Minutes
+
+How you created K8S cluster? Which tool did you use for production ?
+-
+- For learning and lab setups, I've used minikube to manually configure control plane and worker nodes. This gave me idea about components like etcd, kubelet and kube-proxy
+- For production environments I've used managed K8S service AWS EKS. They handle control plane management, upgrades, HA automatically which is more reliable for production workloads
+
+- Workflow
+  - Defined cluster using Terraform or eksctl
+  - Created VPC, subnets and SG or networking
+  - Setup node groups with autoscaling enabled
+  - Configured kubectl and updated kubeconfig to connect to cluster
+  - Deployed workloads using CICD
+ 
+---------------------------------------------
+
+What is difference between deployment and replica sets?
+-
+- Frequent question
+
+---------------------------------------------
+
+Suppose my frontend service is not able to communicate ith backend service in K8S . What will you check?
+-
+- Check pod status. Ensure both are running. Check if backend is restarting due to crashLoop or OOM
+- Check service config like service type. Ensure selector labels match backend pod labels
+- Check DNS resolution inside frontend pod. Check coreDNS logs and its used for K8S service discovery
+- Check network policies. Ensure ingress rule allows traffic
+- Check cluster networking. Verify CNI plugin is healthy. Try pinging the pods from each other
+- To check app level issues,  check logs
+
+---------------------------------------------
+
+What are different types of services in K8S?
+-
+- Frequent question
+
+---------------------------------------------
+
+How to check RAM on linux machine and also storage?
+-
+- free and df commands. Frequent question
+
+---------------------------------------------
+
+How can we check CPU cores in linux?
+-
+- lscpu command to list total CPUs and architecture
+
+---------------------------------------------
+
+How to check resource utilization of nodes in K8S?
+-
+- Use kubectl top command. It shows real time CPU and memory usage for all nodes
+- To check resource requests and limits, use describe command
+- We can also use datadog for production monitoring where dashboards setups give us node CPU/memory/disk usage, pod level graphs, alerts for high utilization
+
+---------------------------------------------
+
+Consider application is working seamlessly inside local network. Client is saying its working slow on their network. How to troubleshoot?
+-
+- Check if its a latency issue, timieout or data issue. Gather related metrics like logs, timestamps from client
+- Check latency between client and server using ping, traceroute
+- If app uses DNS name or LB, confirm DNS resolution time. Check is client is hitting nearest LB/region. Sometimes global DNS routing can cause latency
+- Check if server performance drops dusring client usage. This include CPU/memory, app logs for slow queries, timeouts, DB slow query logs
+- Client often use corporate networks with proxy, VPC or SSL which slows down HTTPS traffic
+- Use monitoring tools to check latency per region
+
+---------------------------------------------
+
+How to build docker image?
+-
+- Docker file and commands
+- Frequent question
+
+---------------------------------------------
+
+What is difference between ADD and COPY in docker?
+-
+- Both ADD and COPY are used to copy files/directories from your local system into the Docker image — but ADD has extra features that make it behave differently.
+- COPY :- copies files and folders from local directory to image. Used when we need to copy local files
+- ADD :- Copies files and also auto extracts compressed files like .tar, .tar.gz. Can fetch files from remote URLs
+
+---------------------------------------------
+
+What is difference between public and private subnet?
+-
+- Frequent question
+
+---------------------------------------------
+
+Suppose I am not able to login remote machine using SSH. What can we do?
+-
+- Basic network connectivity check using ping. If ping fails there can be network/firewall/VPC routing issues
+- Check SSH port is open and reachable using telnet
+- Check SG or firewalls. Cloud instance must allow port 22 from source IP or network
+- Check authentication issues like private key or permissions
+
+---------------------------------------------
+
+How to check if port is open or not?
+-
+- Using lsof or netstat commands
+- To check if a port is open, I use ss -tuln or netstat -tuln on the server to see if it’s listening. To test connectivity from another system, I use telnet, nc, or nmap. If it’s not reachable, I check firewall rules, security groups, and application-level bindings
+
+---------------------------------------------
+
+How to check if process is running or not in Linux?
+-
+- ps -ef | grep $process_name
+
+---------------------------------------------
+
+How can we check if docker container is running or not?
+-
+- docker ps command
+
+---------------------------------------------
+
+How to check IP address of machine?
+-
+- ip addr show
+- hostname -i
+
+---------------------------------------------
+
+# ✅ L3 Pivot Chain CEO Round 
