@@ -92,3 +92,8 @@ Did you face any challenges in setting up SMS notifications delivery?
 
 ---------------------------------------------------------
 
+How did you set up the subscribers list in SNS?
+-
+- We setup SNS topic first and then add subscribers based on notification type email, SMS or lambda
+- We can subscribe multiple endpoints like email, SMS, lambda, SQS, HTTPS
+- For email or SMS receipent must confirm subscription link
