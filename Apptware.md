@@ -96,4 +96,81 @@ How did you set up the subscribers list in SNS?
 -
 - We setup SNS topic first and then add subscribers based on notification type email, SMS or lambda
 - We can subscribe multiple endpoints like email, SMS, lambda, SQS, HTTPS
-- For email or SMS receipent must confirm subscription link
+- For email or SMS receipent must confirm subscription link. Check subscriber status
+- Test notifications over channels
+
+---------------------------------------------------------
+
+What all things in CI/CD have you worked on? 
+-
+- Frequent question
+
+---------------------------------------------------------
+
+When you do maven clean install, does that require internet access over the servers?
+-
+- It depends on whether all required dependencies are already available in local repos or not
+- When we run mvn commands, it downloads al dependencies, plugins, parent POM from remote repos like maven central and store them at local cache
+- So on fresh server or first time build, maven needs internet access
+
+- If dependencies are already present in local, maven uses that cache. Thus maven can build without internet
+
+- In production environments, direct internet access is usually restricted
+
+---------------------------------------------------------
+
+If I give you codebase of jave application, would you be able to write dockerfile for the same?
+-
+- If we already have JAR file built we can use below for CI to produce artifact and push to image build context
+
+<img width="646" height="202" alt="image" src="https://github.com/user-attachments/assets/9221f2da-7745-41af-9c2f-9d61997ab3e1" />
+
+- For java application, dockerfile will look like below
+
+<img width="659" height="281" alt="image" src="https://github.com/user-attachments/assets/84ae2c63-947c-490e-a7ad-ef55e4a95c0a" />
+
+---------------------------------------------------------
+
+What are different cluster types in EKS?
+-
+- EKS supports different deployment and node management models, which effectively define types of clusters based on how the worker nodes are managed.
+
+- Managed node groups :- Most common in prod. AWS auto handles node provisioning, integration with control plane. Nodes run on EC2 instances
+- Self managed nodes :- We create and manage EC2 worker nodes manually
+- Fargate profiles :- No EC2 nodes, fully serverless. AWS handles scaling, scheduling and infra
+
+---------------------------------------------------------
+
+We run into disaster and application goes down. You have access to EKS cluster. If I ask you to take etcd snapshot, will ot be possible?
+-
+- No — you cannot directly take an etcd snapshot in Amazon EKS, because etcd is managed by AWS and you don’t have access to the EKS control plane.
+- In EKS, control plane is managed by AWS and is ran in AWS owned VPC without access to customers. So we cannot SSH into control plane nodes and take manual etcd snapshot
+
+- Taking snapshot is possible in self managed K8S clusters like kubeadm
+
+- As etcd is managed, AWS ensures auto control plane backups
+- We as devops can take snapshots using CLI if workloads use EBS volumes
+
+---------------------------------------------------------
+
+We have K8S cluster. We've to deploy database as K8S object. Which object type can we use?
+-
+- You can deploy a database using a StatefulSet in Kubernetes.
+- Databases need stable network identity, stable persistent storage, ordered scaling/deployment which is provided by stateful sets
+
+- DB pods management :- stateful sets
+- Storage for DB data :- PV and PVC
+- DB Connection access :- service
+
+---------------------------------------------------------
+
+If you want to deploy same manifest yml file into AWS, is there anything we need to create for DB in AWS?
+-
+- We need to make sure PV is available in AWS like EBS volumes or EBS storage class
+- If we deploy DB as SS in EKS, our manifest has PVC which needs storage class that knows how to provision storage on AWS
+
+<img width="662" height="292" alt="image" src="https://github.com/user-attachments/assets/f5dd3742-4ceb-4301-9a57-f054edfd02ae" />
+
+---------------------------------------------------------
+
+
