@@ -164,13 +164,164 @@ We have K8S cluster. We've to deploy database as K8S object. Which object type c
 
 ---------------------------------------------------------
 
-If you want to deploy same manifest yml file into AWS, is there anything we need to create for DB in AWS?
+If you want to deploy same manifest yml file into AWS, is there anything we need to create for DB in AWS? Which one to use EBS or EFS?
 -
 - We need to make sure PV is available in AWS like EBS volumes or EBS storage class
 - If we deploy DB as SS in EKS, our manifest has PVC which needs storage class that knows how to provision storage on AWS
 
 <img width="662" height="292" alt="image" src="https://github.com/user-attachments/assets/f5dd3742-4ceb-4301-9a57-f054edfd02ae" />
 
+- For DBs use EBS as it behaves like local disk and given consistent IOPS and latency. For any pod we need disk storage use EBS its RWO for gp2,gp3 type of volumes
+- For inter pod communication and file sharing system, use EFS allows RWX so volume can access multiple pods
+
 ---------------------------------------------------------
 
+What is the difference between ALB and NLB?
+-
+- Whenever application gets request, it flows through 7 layers of OSI model and then response is processed to user
+- 7 layers - Application - Presentation - Session - Transport - Network - Data Link - Physical
+
+- ALB operates at L7 Application layer. Used to route requests based on HTTP/S. Has high latency due to L7 inspection
+  - Performs LB at L7 dealing with HTTP traffic. Host or path routing is decided here
+  - With ALB we can access multiple domains of website on different context paths
+ 
+- NLB operates at L4 transport layer. Supports TCP/UDP protocols
+  - Used when we dont want to perform routing depending on HTTPrequest sent to us. Whenrequest comes to L4, NLB works
+  - Used in game server or youtube where least latency is expected. Data is transmitted in chunks with high transimission rate.
+  - Less costly and fast compared to ALB
+  - Performs routing at TCP/UDP packets
+ 
+---------------------------------------------------------
+
+If we have K8S cluster, can we use NLB over there?
+-
+- Yes we can use NLBwith AWS EKS
+- AWS EKS natively supports NLB integration through K8S service LB
+
+- AWS here auto provisions  LB in our AWS account
+
+<img width="893" height="454" alt="image" src="https://github.com/user-attachments/assets/57fa031f-5f21-4f3b-b582-3c576785f559" />
+
+- Above creates NLB that routes external traffic to K8S service on port 80 > 8080
+- As NLB works at L4, it can handle multiple requests per second
+
+---------------------------------------------------------
+
+I have deployment that scales upto 10 replicas and NLB has specific/static IPs that exposes those pods. What about new pods that get generated during scaling or rollout? How NLB handle this if IPs are fixed?
+-
+- When we create service of type LB with annotation of NLB, AWS auto creates NLB and associates it with target groups. Each EC2 in EKS becomes target in that target group
+- Kube proxy on each node does node level LB to send traffic from node to correct pods
+
+- If nw pods are creates they are scheduled onto nodes. Service's endpoints object gets updated to include those new pods
+- NLB itself doesnt need to change its IPs - it already forwards traffic to registered nodes
+- Node's kube proxy auto forwards incoming traffic to new pods via cluster networking
+
+- So no changes to NLB IPs or its config are needed
+
+---------------------------------------------------------
+
+Write a terraform configuration script to create VPC and EC2 config using modules
+-
+- Frequent question
+
+---------------------------------------------------------
+
+I have a shell script having multiple dependncies doing server config but I want to make sure it shouldnt install already installed things again when we rerun the script in future. How can we achieve that?
+-
+- In script we can add pre-checks before every action
+
+<img width="612" height="203" alt="image" src="https://github.com/user-attachments/assets/1069e7ab-2aaa-4512-8f85-aa14a7834eb7" />
+
+<img width="656" height="250" alt="image" src="https://github.com/user-attachments/assets/9f806994-703c-4ad2-954d-2c5aefdde9b9" />
+
+---------------------------------------------------------
+
+What things have you done in shell scripting?
+-
+- Frequent question
+
+---------------------------------------------------------
+
+I want to replicate the terraform configuration into other env , how can we do it?
+-
+- Terraform modules
+- Frequent question
+
+---------------------------------------------------------
+
+Command to create workspace 
+-
+- terraform workspace create UAT
+- Frequent question
+
+---------------------------------------------------------
+
+What is state file in terraform? How can we maintain it remotely?
+-
+- Frequent question
+- Remote backend using S3
+
+---------------------------------------------------------
+
+We are working in a team and multiple members make some changes in same terraform scripts. How can we avoid overriding the backend files?
+-
+- If multiple people run terraform apply or terraform plan at the same time on the same backend, the state can get corrupted or overwritten.
+- Use remote backend with state locking
+  - S3 + dynamoDB
+  - Create S3 and DB table fro backend and locking
+  - Configure backend.tf file
+ 
+- This creates lock record in DynamoDB so no one else can modify changes of state. Lock is released when apply is complete
+
+<img width="790" height="687" alt="image" src="https://github.com/user-attachments/assets/84b544af-df37-41dc-95bd-19c190c7471c" />
+
+---------------------------------------------------------
+
+How to handle drifts in terraform files?
+-
+- Drift occurs when the real infrastructure (in your cloud provider) changes outside of Terraform’s control — meaning, the actual state in AWS/Azure/GCP no longer matches what’s defined in your Terraform configuration or state file.
+  - Someone manually changed an EC2 instance type in AWS Console.
+  - A resource was deleted manually.
+  - Auto-scaling created or destroyed infrastructure outside Terraform’s knowledge.
+  - Terraform code changed, but not yet applied
+
+- To detect drift :- terraform plan
+  - to compare config files, state file and actual resources
+ 
+- To detect drift :- terraform refresh
+  - updates your state file to match the real-world infrastructure
+  - After this, your terraform.tfstate file reflects the current resource values, but your code remains unchanged.
+ 
+- To handle drift
+  - Update .tf file accordingly to be in sync with config
+  - you can fix it by re-applying Terraform to restore the desired configuration
+ 
+---------------------------------------------------------
+
+Have you ever had merge conflicts? How did you resolve them?
+-
+- Using git rebase. Add feature on top of master and then merge feature to master
+- First pull changes from remote to local. Check conflicts. Review both versions. Update files and then push them to remote
+
+---------------------------------------------------------
+
+What are different merging strategies?
+-
+- Fast forward and 3 way merge
+- Frequent question
+
+---------------------------------------------------------
+
+I have feature and main branch. In feature I pushed 4 changes and I want to merge one of that change into main. How can we do that?
+-
+- git cherry pick command $commit
+
+---------------------------------------------------------
+
+Which ticketing tools are you familiar with?
+- 
+- Cherwell, Remedy
+- General question
+
+---------------------------------------------------------
 
