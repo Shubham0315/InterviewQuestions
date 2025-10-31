@@ -93,3 +93,40 @@ How to deploy app on production without downtime?
 
 -------------------------------
 
+# ✅ L2 Infospica Technical ( Questions) 21 Minutes
+
+Can you explain more on the K8S experience? Which all components did you deploy from management as well as application perspective on EKS?
+-
+- Explain current application architecture
+
+- Management perspective - Cluster Level components
+  - Created EKS using terraform, configured worker nodes, IAM and SG
+  - Integarted with VPC, subnets, route tables, SG. Configured CNI plugin for pod networking
+  - Deployed ALB ingress controller for HTTP/S routing. Configured ingress rules
+  - For monitoring and logging have datadog and splunk in place to give overview of metrics and dashboard
+  - Secrets manager and vault is used for secrets management
+  - Cluster autoscalar is deployed. HPA is in place
+  - RBAC is configured - clusterRole, roleBinding and serviceAccount for teams
+ 
+- Application perspective - Workload Deployment
+  - Deployed microservices using deployment and RS
+  - Used services like clusterIP for internal communication and LB/Ingress for public exposure of apps
+  - Used PVCs backed by EBS volumes for DBs and EFS for shared volumes
+  - For DBs have stateful sets in place
+  - Datadog agent is deployed on all nodes as daemon sets
+
+-------------------------------
+
+Was your jenkins hosted on AWS or on any other env?
+-
+- It is a separate entity not hosted on AWS
+- We had it running on an on-premises server / internal VM. The Jenkins instance was integrated with AWS services through secure IAM user credentials or access keys for tasks like pushing Docker images to ECR or deploying workloads to EKS.
+
+- We had it on Linux VM, connected it to AWS CLI configuring it with IAM  keys via jenkins credentials store
+- For artifact storage we used nexus artifactory
+
+-------------------------------
+
+How jenkins server was authenticated with EKS cluster for deployment?
+-
+- 
