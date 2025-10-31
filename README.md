@@ -11,6 +11,7 @@ You must have exposure to below DevOps concepts and tools
 - **Monitoring tool** :- any from  cloudwatch, DataDog, Prometheus + Grafana
 - Linux commands and shell scripting
 - **Optional** :- GitLab CICD, Docker compose
+- ITIL/ITSM process with ticketing tools
 
 Notes:-
 - 
