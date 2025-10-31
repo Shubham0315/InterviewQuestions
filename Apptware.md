@@ -1,4 +1,4 @@
-# ✅ L1 Apptware Technical ( Questions) 71 Minutes
+# ✅ L1 Apptware Technical (33 Questions) 71 Minutes
 
 With your learnings in GCP and working experience in AWS, what differences did you realize? What advantages does AWS have over GCP?
 -
