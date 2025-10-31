@@ -6,11 +6,11 @@ Hey All, I've documented the questions asked in multiple interviews I attended i
 
 You must have exposure to below DevOps concepts and tools 
 -
-- Mandatory :- Kubernetes/EKS, Terraform, Jenkins CI/CD, Docker
-- Any cloud platform like AWS/GCP/Azure
-- Any monitoring tool like cloudwatch, DataDog, Prometheus + Grafana
+- **Mandatory** :- Kubernetes/EKS, Terraform, Jenkins CI/CD, Docker
+- **Cloud platform** :- any like AWS/GCP/Azure
+- **Monitoring tool** :- any from  cloudwatch, DataDog, Prometheus + Grafana
 - Linux commands and shell scripting
-- Optional :- GitLab CICD, Docker compose
+- **Optional** :- GitLab CICD, Docker compose
 
 Notes:-
 - 
