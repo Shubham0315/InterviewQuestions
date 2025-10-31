@@ -129,4 +129,73 @@ Was your jenkins hosted on AWS or on any other env?
 
 How jenkins server was authenticated with EKS cluster for deployment?
 -
-- 
+- Jenkins pipeline needs permission to deploy resources to the EKS cluster
+
+- Configured AWS credentials in jenkins so it will fetch cluster details, push images and deploy on EKS
+  - Common way is with IAM user with access keys. Create user with limited access. Store access keys in jenkins credentials and use them in pipelines using "withCredentials" block
+
+- Configure kubeconfig in jenkins
+  - Command :- **aws eks update-kubeconfig --name my-cluster --region ap-south-1**
+
+
+-------------------------------
+
+Is only worker nodes are hosted in private subnet or master as well?
+-
+- Frequent question regarding VPC structure
+
+-------------------------------
+
+How are you managing ingress in cluster?
+-
+- We manage ingress using ALB ingress controller which directly integrates with EKS cluster and auto provisions ALB in AWS when we deploy Ingress resources in K8S
+- This allows to handle application level routing HTTP/S for multiple services securely
+
+- IC is Deployed as a Kubernetes controller in its own namespace. It watches for Ingress objects and provisions an ALB in AWS.
+- IR defines routing rules (paths/hosts) to backend services within the cluster.
+- ALB operates at Layer 7 (HTTP/HTTPS), perfect for routing to multiple apps behind a single entry point.
+
+-------------------------------
+
+Which ingress controller are you using for application?
+-
+- We’re using the NGINX Ingress Controller for managing application ingress in our EKS cluster.
+
+-------------------------------
+
+How is your work experience with ECS? 
+-
+- Frequent general question
+- My experience includes creating ECS clusters, defining task definitions, and configuring services to run containers using Fargate as the launch type
+- Mostly using ECR our team used to take pushed images to deploy on ECS. Thus we had integrated ECS with Application Load Balancers (ALB) for traffic routing
+- I handled CI/CD deployments to ECS using Jenkins pipelines, where new images were pushed to ECR and automatically deployed to ECS services.
+
+-------------------------------
+
+How would you handle autoscaling for worker nodes?
+-
+- For managing autoscaling of worker nodes in EKS, I use the Cluster Autoscaler.
+- It automatically adjusts the number of nodes in the node group based on pending pods or underutilized nodes.
+- The Cluster Autoscaler is deployed as a Kubernetes deployment with the right IAM permissions to scale the underlying Auto Scaling Group (ASG) in AWS.
+- We also define minimum, desired, and maximum node counts in the ASG to control limits, and use datadog metrics or custom scaling policies when needed to fine-tune performance and cost.
+
+- Cluster autoscalar and ASG mainly
+
+-------------------------------
+
+How is your work experience on networking part like VPC, firewalls, WAF?
+-
+- I have hands-on experience working with AWS networking components like VPC, subnets, route tables, security groups, and NACLs to design secure and scalable network architectures.
+- I’ve configured private and public subnets for EKS and other services, ensuring proper routing and isolation.
+- For security, I’ve worked with Security Groups and Network ACLs to control inbound and outbound traffic, and I’ve implemented AWS WAF with ALB/CloudFront to protect applications from common web attacks like SQL injection and XSS.
+- I’ve also configured VPC peering and endpoint gateways for secure service communication within AWS without exposing data over the internet.
+
+-------------------------------
+
+Have you worked on any security related services ?
+-
+- Frequent question
+- SonarQube scanner
+
+-------------------------------
+
