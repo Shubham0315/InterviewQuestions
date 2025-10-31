@@ -93,7 +93,7 @@ How to deploy app on production without downtime?
 
 -------------------------------
 
-# ✅ L2 Infospica Technical ( Questions) 21 Minutes
+# ✅ L2 Infospica Technical (10 Questions) 21 Minutes
 
 Can you explain more on the K8S experience? Which all components did you deploy from management as well as application perspective on EKS?
 -
