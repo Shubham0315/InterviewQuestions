@@ -323,4 +323,11 @@ Difference between AWS managed and custom managed policies?
 ------------------------------
 
 
-# ✅ L2 T-Systems Managerial ( Questions) 19 Minutes
+# ✅ L2 T-Systems Managerial - Behavioral Questions - 19 Minutes
+
+- core skills
+- How will you learn new technology?
+- gave overview of project and product
+- Which things would you like to improve in yourself? What are the shortcoming you would like to get rid off?
+
+
