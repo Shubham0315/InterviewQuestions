@@ -54,3 +54,64 @@ While using docker, container gets restarted and we need to have data within con
 --------------------------------------
 
 
+# ✅ L2 Persistent Technical (7 Questions) 27 Minutes
+
+How is the monitoring done in your project using DataDog and Splunk? Is it using metrics or any other means?
+-
+- Frequent question. Explain about project and how logs are captured
+- Give overview how you have set SLI, SLA and SLO for different metric like CPU, Memory, response time, error rates, latency
+- Error tracking page for different microservices
+- Pod and node health check, HTTP dashboard check for P90, P99 request
+
+--------------------------------------
+
+Explain the challenges you faced when you had to recover situation in production systems
+-
+- Frequent scenario question based on experience
+- Manual to automated deployments using CICD - one example
+- AWS resource creation using terraform scripts
+
+--------------------------------------
+
+Have you created infrastructure using terraform? How's your experience on creating backups as well using terraform scripts or modules?
+-
+- I’ve used Terraform to provision and manage various AWS resources like EC2 instances, VPCs, subnets, security groups, S3 buckets, IAM roles, and RDS databases.
+- For backups we've RDS in our project using which we automate backup retention policies and snapshot creation through Terraform resources. Primary and secondary region are in place
+- I’ve also written custom Terraform modules to standardize backup configurations across environments — ensuring consistency, easy reuse, and compliance with organizational policies.
+- You can also explain how you create infrastructure in blue green setup if exist
+- First we create infra using terraform and then for DR purpose we have identical environments and replicas deployed in multiple zones. So whenever any issue happens in any env, we switch the traffic to other env or zone making secondary region as primary for user traffic
+- We also have modules written for different resources
+
+--------------------------------------
+
+You have mentioned you reduced deployment errors. How did you do that? 
+-
+- This was done by setting up CICD pipeline for applications which we were deploying manually
+- We set up multiple stages in pipelines and deployed on on-prem as well as cloud servers
+
+--------------------------------------
+
+What is your core skillset ?
+-
+- General question
+- Jenkins CICD, Kubernetes, Terraform, DataDog/Cloudwatch monitoring
+
+--------------------------------------
+
+Explain one best practice for SRE in your project
+-
+- General question reagrding application traffic and monitoring tools
+- Error tracking, traffic monitoring, SLA/SLI, node/pod health checks, HTTP dahsboards for 400/500 errors
+
+--------------------------------------
+
+How is your experience on Linux administration and shell scripting
+-
+- In one of my roles I had to depliy apps on Linux machines. We had to check logs, application requests on different servers. There I worked as Linux admin as well
+- We had implemented shell scripts for logs archiving, log rotation, CPU/memory usage, etc
+- You can explain more points according to experience
+
+--------------------------------------
+
+
+
