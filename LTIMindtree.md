@@ -128,6 +128,7 @@ You have a pod for which you want to restrict access on other K8S objects, how t
 Can you horizontally scale the pod based on CPU/Memory metrics?
 -
 - Using HPA
+- Frequent question
 
 --------------------------------------------------------------------------------------------------
 
@@ -220,11 +221,13 @@ What you are doing for DR strategy in your current project?
 
 State difference between SG and NACL
 -
+- Frequent question
 
 --------------------------------------------------------------------------------------------------
 
 How will you define subnet whether its public or private? State difference
 -
+- Frequent question
 
 --------------------------------------------------------------------------------------------------
 
