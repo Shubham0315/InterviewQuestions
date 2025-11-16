@@ -331,3 +331,11 @@ Difference between AWS managed and custom managed policies?
 - Which things would you like to improve in yourself? What are the shortcoming you would like to get rid off?
 
 
+------------------------------
+
+# ✅ R3 T-Systems HR - 38 Minutes
+
+- About background
+- Reason to join T- Systems
+- Overview of organization policies
+- Salary discussion
