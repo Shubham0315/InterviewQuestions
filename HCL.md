@@ -1,4 +1,4 @@
-# ✅ L1 HCL Technologies Technical ( Questions) 50 Minutes
+# ✅ L1 HCL Technologies Technical (13 Questions) 50 Minutes
 
 How's your core experience in Kubernetes and Terraform?
 -
@@ -67,6 +67,40 @@ What if we delete PV?
 -
 - It will NOT delete the actual storage backend like EBS. You must manually attach/detach storage
 - Deleting PV simply removes K8S PV object not the physical storage
+
+-------------------------------------
+
+Under the prod namespace, I want to deploy one application?
+-
+- First create or update K8S namespace. If prod NS doesnt exist, create it
+- Define application's deployment yml file and apply the same
+- Verify the created deployment
+- Create a service if app needs to be exposed to customers. Apply the service yml
+- Monitor deployment using logs and status commands
+- If we need to scale application :- **kubectl scale deployment my-app --replicas=5 -n prod**
+
+-------------------------------------
+
+What is CNI?
+-
+- In Kubernetes (K8s), CNI stands for Container Network Interface. It's a specification and a set of libraries used to manage networking for containers. CNI defines how networking for containers should be implemented and provides a standardized way for network plugins to integrate with container orchestration systems like Kubernetes.
+- Kubernetes uses CNI to configure networking for containers, ensuring they can communicate with each other across nodes in a cluster, and also provide access to external networks.
+- CNI plugins often handle the allocation of IP addresses for pods and containers. This can be done in different ways, depending on the plugin, such as assigning IPs from a pool or integrating with a cloud provider's network.
+- e.g :- Calico, flannel, canal
+
+-------------------------------------
+
+What is Ingress Controllers?
+-
+- An Ingress Controller in Kubernetes is a component that manages and implements the Ingress resource, which provides HTTP and HTTPS routing for external traffic into your Kubernetes cluster.
+- An Ingress is a Kubernetes API resource that defines how external HTTP(S) requests should be routed to the services within the cluster. It contains routing rules based on domain names, URLs, or paths. An Ingress resource doesn't handle the actual traffic itself. It only defines the rules. That's where the Ingress Controller comes in.
+- The Ingress Controller is the actual implementation that reads the Ingress resources in the cluster and configures the underlying proxy or load balancer to handle external traffic accordingly. It watches for changes in Ingress resources and automatically updates its configuration to route traffic based on the defined rules.
+
+-------------------------------------
+
+If you want to copy a file inside a namepsace, which command will you use?
+-
+- kubectl cp $file $dest
 
 -------------------------------------
 
