@@ -155,3 +155,7 @@ What you do usually when you want help from other teams and they're not respondi
 
 ------------------------------------
 
+✅ L3 Entain Technical SRE - 58 Minutes
+
+- Given a payment application architecture diagram and was asked to elaborate the same for e-commerce application. 
+- Framed some questions based on my responses based on monitoring and observability using DataDog and Cloudwatch with ITSM/ITIL processes
